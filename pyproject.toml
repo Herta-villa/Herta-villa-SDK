@@ -1,0 +1,67 @@
+
+[project]
+name = "Herta-villa-SDK"
+version = "0.1.0"
+description = "大别野「黑塔」Python SDK"
+authors = [
+    {name = "MingxuanGame", email = "MingxuanGame@outlook.com"},
+]
+dependencies = [
+    "aiohttp>=3.8.4",
+]
+requires-python = ">=3.8"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "ruff>=0.0.270",
+    "pre-commit>=3.3.2",
+    "black>=23.3.0",
+]
+
+[tool.ruff]
+line-length = 79
+select = [
+  "E", "W",   # pycodestyle
+  "F",        # pyflakes
+  "I",        # isort
+  "RUF",      # ruff
+  "TRY",      # tryceratops
+
+  # pylint
+  "PLW",      # Warning
+  "PLR",      # Refactor
+  "PLE",      # Error
+
+  "PTH",      # flake8-use-pathlib
+  "SLF",      # flake8-self
+  "RET",      # flake8-return
+  "RSE",      # flake8-raise
+  "T20",      # flake8-print
+  "PIE",      # flake8-pie
+  "ISC",      # flake8-implicit-str-concat
+  "C4",       # flake8-comprehensions
+  "COM",      # flake8-commas
+  "A",        # flake8-builtins
+  "B",        # flake8-bugbear
+  "ASYNC",    # flake8-async
+]
+
+[tool.ruff.isort]
+force-sort-within-sections = true
+extra-standard-library = ["typing_extensions"]
+force-wrap-aliases = true
+combine-as-imports = true
+order-by-type = true
+relative-imports-order = "closest-to-furthest"
+required-imports = ["from __future__ import annotations"]
+section-order = ["future", "standard-library", "first-party", "local-folder", "third-party"]
+
+[tool.pdm.scripts]
+lint = "ruff check ."
+fix = "ruff check --fix ."
