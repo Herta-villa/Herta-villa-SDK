@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from hertavilla.models import parse_event
+from hertavilla.event import parse_event
 
 from aiohttp import web
 

@@ -33,6 +33,7 @@ select = [
   "I",        # isort
   "RUF",      # ruff
   "TRY",      # tryceratops
+  # "D",        # pydocstyle
 
   # pylint
   "PLW",      # Warning
