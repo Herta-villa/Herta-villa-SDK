@@ -8,6 +8,7 @@ authors = [
 ]
 dependencies = [
     "aiohttp>=3.8.4",
+    "pydantic>=1.10.8",
 ]
 requires-python = ">=3.8"
 readme = "README.md"
@@ -52,6 +53,8 @@ select = [
   "ASYNC",    # flake8-async
 ]
 
+allowed-confusables = ["，", "。"]
+
 [tool.ruff.isort]
 force-sort-within-sections = true
 extra-standard-library = ["typing_extensions"]
@@ -65,3 +68,19 @@ section-order = ["future", "standard-library", "first-party", "local-folder", "t
 [tool.pdm.scripts]
 lint = "ruff check ."
 fix = "ruff check --fix ."
+
+[tool.pyright]
+reportShadowedImports = false
+pythonVersion = "3.8"
+pythonPlatform = "All"
+executionEnvironments = [
+  { root = "./" },
+]
+
+[tool.black]
+extend-exclude = '''
+'''
+include = '\.pyi?$'
+line-length = 79
+skip-string-normalization = true
+target-version = ["py38", "py39", "py310", "py311"]
