@@ -1,6 +1,6 @@
 
 [project]
-name = "Herta-villa-SDK"
+name = "herta-villa-sdk"
 version = "0.1.0"
 description = "大别野「黑塔」Python SDK"
 authors = [
