@@ -26,21 +26,20 @@ BASE_API = "https://bbs-api.miyoushe.com/vila/api/bot/platform"
 
 TE = TypeVar("TE", bound=Event)
 
-bots: dict[str, "VillaBot"] = {}
-
 
 class VillaBot:
     def __init__(
         self,
         bot_id: str,
         secret: str,
+        callback_endpoint: str,
         name: str | None = None,
     ) -> None:
         self.bot_id = bot_id
         self.secret = secret
         self._name = name
+        self.callback_endpoint = callback_endpoint
         self.handlers = {}
-        bots[bot_id] = self
 
     @property
     def name(self) -> str | None:

@@ -2,19 +2,23 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 
-from hertavilla.bot import bots
+from hertavilla.bot import VillaBot
 from hertavilla.event import Event, parse_event
 
 from aiohttp import web
 
 background_tasks = set()
+bots: dict[str, VillaBot] = {}
+
+logger = logging.getLogger("hertavilla.webhook")
 
 
 async def _run_handles(event: Event):
     # sourcery skip: raise-from-previous-error
     try:
-        if bot := bots.get(event.robot.template.id, None):
+        if bot := bots.get(event.robot.template.id):
             task = asyncio.create_task(bot.handle_event(event))
             background_tasks.add(task)
             task.add_done_callback(background_tasks.discard)
@@ -55,7 +59,12 @@ async def http_handle(request: web.Request):
     )
 
 
-def run_http():
+def run(host: str = "0.0.0.0", port: int = 8080):
     app = web.Application()
-    app.add_routes([web.post("/", http_handle)])
-    web.run_app(app)
+    app.add_routes(
+        [
+            web.post(bot.callback_endpoint, http_handle)
+            for bot in bots.values()
+        ],
+    )
+    web.run_app(app, host=host, port=port, print=None)  # type: ignore
