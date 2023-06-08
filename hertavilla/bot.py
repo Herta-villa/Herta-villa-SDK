@@ -26,6 +26,8 @@ BASE_API = "https://bbs-api.miyoushe.com/vila/api/bot/platform"
 
 TE = TypeVar("TE", bound=Event)
 
+bots: dict[str, "VillaBot"] = {}
+
 
 class VillaBot:
     def __init__(
@@ -37,8 +39,8 @@ class VillaBot:
         self.bot_id = bot_id
         self.secret = secret
         self._name = name
-        self._session = ClientSession()
         self.handlers = {}
+        bots[bot_id] = self
 
     @property
     def name(self) -> str | None:
@@ -79,17 +81,18 @@ class VillaBot:
         params: dict[str, Any] | None = None,
     ):
         # print(data)
-        async with self._session.request(
-            method,
-            f"{BASE_API}{api}",
-            json=data,
-            params=params,
-            headers=self._make_header(villa_id) if villa_id else None,
-        ) as resp:
-            payload = await resp.json()
-            raise_exception(payload)
-            # print(payload["data"])
-            return payload["data"]
+        async with ClientSession() as session:
+            async with session.request(
+                method,
+                f"{BASE_API}{api}",
+                json=data,
+                params=params,
+                headers=self._make_header(villa_id) if villa_id else None,
+            ) as resp:
+                payload = await resp.json()
+                raise_exception(payload)
+                # print(payload["data"])
+                return payload["data"]
 
     async def check_member_bot_access_token(
         self,
@@ -229,9 +232,6 @@ class VillaBot:
             room_id,
             await chain.to_content_json(self),
         )
-
-    async def close(self) -> None:
-        await self._session.close()
 
     # event handle
     def listen(

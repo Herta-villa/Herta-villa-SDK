@@ -3,10 +3,5 @@
     "editor.defaultFormatter": "ms-python.black-formatter"
   },
   "python.formatting.provider": "none",
-  "cSpell.words": [
-    "aiohttp",
-    "hertavilla",
-    "herta",
-    "retcode"
-  ]
+  "cSpell.words": ["aiohttp", "herta", "hertavilla", "retcode", "sourcery"]
 }
