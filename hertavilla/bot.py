@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -25,6 +26,8 @@ from aiohttp import ClientSession
 BASE_API = "https://bbs-api.miyoushe.com/vila/api/bot/platform"
 
 TE = TypeVar("TE", bound="Event")
+
+logger = logging.getLogger("hertavilla.bot")
 
 
 class VillaBot:
@@ -79,7 +82,7 @@ class VillaBot:
         data: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
     ):
-        # print(data)
+        logger.info(f"Calling API {api}.")
         async with ClientSession() as session:
             async with session.request(
                 method,
@@ -90,7 +93,6 @@ class VillaBot:
             ) as resp:
                 payload = await resp.json()
                 raise_exception(payload)
-                # print(payload["data"])
                 return payload["data"]
 
     async def check_member_bot_access_token(
@@ -244,10 +246,12 @@ class VillaBot:
             func: Callable[[TE, VillaBot], Coroutine[Any, Any, None]],
         ) -> Callable[[TE, VillaBot], Coroutine[Any, Any, None]]:
             self.handlers.setdefault(event.__name__, []).append(func)
+            logger.info(f"Registered the handler {func} for {event.__name__}")
             return func
 
         return wrapper
 
     async def handle_event(self, event: Event) -> None:
         handlers = self.handlers.get(event.__class__.__name__, [])
+        logger.info(f"Handling event for {len(handlers)} handler(s)")
         await asyncio.gather(*[handler(event, self) for handler in handlers])
