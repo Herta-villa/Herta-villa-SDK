@@ -10,6 +10,12 @@ def _c(text: str) -> int:
     return (len(text.encode("utf-16")) // 2) - 1
 
 
+def _rc(length: int) -> int:
+    return (length + 1) * 2
+
+
+entity_types: dict[str, type["_TextEntity"]] = {}
+
 # define TypedDicts for typing
 
 
@@ -56,12 +62,20 @@ class MsgContent:
 class _TextEntity(abc.ABC):
     type_: str
 
+    def __init__(self, **kwargs) -> None:  # noqa: B027
+        ...
+
     @abc.abstractmethod
     async def get_text(self, bot: VillaBot) -> str:
         raise NotImplementedError
 
     def get_mention(self) -> tuple[Literal[1, 2], str] | None:
         return None
+
+    def __init_subclass__(cls) -> None:
+        if cls.__name__ not in {"Text", "Quote"}:
+            entity_types[cls.type_] = cls
+        return super().__init_subclass__()
 
 
 class Text(_TextEntity):
@@ -114,9 +128,13 @@ class MentionedRobot(_TextEntity):
 class MentionedUser(_TextEntity):
     type_ = "mentioned_user"
 
-    def __init__(self, villa_id: int, user_id: str) -> None:
+    def __init__(
+        self,
+        user_id: str,
+        _villa_id: int = 0,
+    ) -> None:
         self.user_id = user_id
-        self._villa_id = villa_id
+        self._villa_id = _villa_id
 
     async def get_text(self, bot: VillaBot) -> str:
         member = await bot.get_member(self._villa_id, int(self.user_id))

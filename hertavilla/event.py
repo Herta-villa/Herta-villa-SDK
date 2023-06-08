@@ -1,10 +1,21 @@
 # ruff: noqa: A003
 from __future__ import annotations
 
+import json
 import sys
 from typing import Any, Literal, Type
 
-from pydantic import BaseModel
+from hertavilla.message import (
+    EntityDict,
+    MentionedInfo,
+    MessageChain,
+    QuoteInfo,
+    Text,
+    _rc,
+    entity_types,
+)
+
+from pydantic import BaseModel, Field, create_model_from_typeddict, validator
 
 if sys.version_info >= (3, 11):
     from typing import Self
@@ -70,10 +81,73 @@ class JoinVillaEvent(Event):
 
 
 # SendMessage
+
+# why ignore type: https://github.com/pydantic/pydantic/issues/5953
+MentionedInfoModel = create_model_from_typeddict(MentionedInfo)  # type: ignore
+QuoteInfoModel = create_model_from_typeddict(QuoteInfo)  # type: ignore
+
+
+class User(BaseModel):
+    portrait_uri: str = Field(alias="portraitUri")
+    extra: dict
+    name: str
+    alias: str
+    id: str
+    portrait: str
+
+    @validator("extra", pre=True)
+    def extra_str_to_dict(cls, v: Any):
+        return json.loads(v) if isinstance(v, str) else v
+
+
+class Trace(BaseModel):
+    visual_room_version: str
+    app_version: str
+    action_type: int
+    bot_msg_id: str
+    client: str
+    rong_sdk_version: str
+
+
+class MessageContent(BaseModel):
+    content: MessageChain
+    mentioned_info: MentionedInfoModel | None = Field(  # type: ignore
+        None,
+        alias="mentionedInfo",
+    )
+    quote: QuoteInfoModel | None = None  # type: ignore
+    user: User | None = None
+    trace: Trace | None = None
+
+    @validator("content", pre=True)
+    def parse_content(cls, v: Any):
+        chain = MessageChain()
+        text = v["text"].encode("utf-16")
+        entities = v["entities"]
+        last_offset = 0
+        last_length = 0
+        for entity in entities:
+            end_offset = last_offset + last_length
+            entity: EntityDict
+            offset = entity["offset"]
+            body = entity["entity"]
+            type_ = body.pop("type")
+            if offset != end_offset:
+                # 两个 Entity 偏移相差为文字
+                chain.append(
+                    Text(text[_rc(end_offset) : _rc(offset)].decode("utf-16")),
+                )
+            else:
+                chain.append(entity_types[type_](**body))
+            last_offset = offset
+            last_length = entity["length"]
+        return chain
+
+
 class SendMessageEvent(Event):
     type: Literal[2]
 
-    content: str
+    content: MessageContent
     """消息内容"""
     from_user_id: int
     """发送者 id"""
@@ -90,6 +164,10 @@ class SendMessageEvent(Event):
     bot_msg_id: str | None
     """如果被回复的消息从属于机器人，则该字段不为空字符串"""
 
+    @validator("content", pre=True)
+    def str_to_json(cls, v: Any):
+        return json.loads(v)
+
 
 def parse_event(payload: dict[str, Any]) -> Event:
     type_: int = payload["type"]
@@ -98,40 +176,3 @@ def parse_event(payload: dict[str, Any]) -> Event:
     payload.pop("extend_data")
     payload |= data
     return cls_.parse_obj(payload)
-
-
-if __name__ == "__main__":
-    event = parse_event(
-        {
-            "event": {
-                "robot": {
-                    "template": {
-                        "id": "bot_ea9d3xxxxxx9",
-                        "name": "测试",
-                        "desc": "测试机器人",
-                        "icon": "",
-                        "commands": [{"name": "/重置", "desc": "重置会话"}],
-                    },
-                    "villa_id": 100001,
-                },
-                "type": 2,
-                "extend_data": {
-                    "EventData": {
-                        "SendMessage": {
-                            "content": "",
-                            "from_user_id": 3300034,
-                            "send_at": 1683275781450,
-                            "object_name": 1,
-                            "room_id": 95333,
-                            "nickname": "kdodjcoclss",
-                            "msg_uid": "C7TC-71AI-KDN8-MS0I",
-                        },
-                    },
-                },
-                "created_at": 1683275781450,
-                "id": "8ee4c10d-8354-18d7-84df-7e02f034cfd1",
-                "send_at": 1683275782,
-            },
-        }["event"],
-    )
-    print(event.dict())  # noqa: T201

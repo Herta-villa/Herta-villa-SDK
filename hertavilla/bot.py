@@ -11,12 +11,12 @@ from typing import (
     TypeVar,
 )
 
-from hertavilla.event import Event
 from hertavilla.exception import raise_exception
 from hertavilla.model import BotMemberAccessInfo, Member, Room, Villa
 from hertavilla.utils import MsgEncoder
 
 if TYPE_CHECKING:
+    from hertavilla.event import Event
     from hertavilla.message import MessageChain, MsgContentInfo
 
 
@@ -24,7 +24,7 @@ from aiohttp import ClientSession
 
 BASE_API = "https://bbs-api.miyoushe.com/vila/api/bot/platform"
 
-TE = TypeVar("TE", bound=Event)
+TE = TypeVar("TE", bound="Event")
 
 
 class VillaBot:

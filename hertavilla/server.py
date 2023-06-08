@@ -59,12 +59,9 @@ async def http_handle(request: web.Request):
     )
 
 
-def run(host: str = "0.0.0.0", port: int = 8080):
+def run(*bots_: VillaBot, host: str = "0.0.0.0", port: int = 8080):
     app = web.Application()
-    app.add_routes(
-        [
-            web.post(bot.callback_endpoint, http_handle)
-            for bot in bots.values()
-        ],
-    )
+    for bot in bots_:
+        bots[bot.bot_id] = bot
+        app.router.add_post(bot.callback_endpoint, http_handle)
     web.run_app(app, host=host, port=port, print=None)  # type: ignore
