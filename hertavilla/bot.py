@@ -1,8 +1,17 @@
 from __future__ import annotations
 
+import asyncio
 import json
-from typing import TYPE_CHECKING, Any, Literal
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Coroutine,
+    Literal,
+    TypeVar,
+)
 
+from hertavilla.event import Event
 from hertavilla.exception import raise_exception
 from hertavilla.model import BotMemberAccessInfo, Member, Room, Villa
 from hertavilla.utils import MsgEncoder
@@ -14,6 +23,8 @@ if TYPE_CHECKING:
 from aiohttp import ClientSession
 
 BASE_API = "https://bbs-api.miyoushe.com/vila/api/bot/platform"
+
+TE = TypeVar("TE", bound=Event)
 
 
 class VillaBot:
@@ -27,6 +38,7 @@ class VillaBot:
         self.secret = secret
         self._name = name
         self._session = ClientSession()
+        self.handlers = {}
 
     @property
     def name(self) -> str | None:
@@ -220,3 +232,23 @@ class VillaBot:
 
     async def close(self) -> None:
         await self._session.close()
+
+    # event handle
+    def listen(
+        self,
+        event: type[TE],
+    ) -> Callable[
+        [Callable[[TE, VillaBot], Coroutine[Any, Any, None]]],
+        Callable[[TE, VillaBot], Coroutine[Any, Any, None]],
+    ]:
+        def wrapper(
+            func: Callable[[TE, VillaBot], Coroutine[Any, Any, None]],
+        ) -> Callable[[TE, VillaBot], Coroutine[Any, Any, None]]:
+            self.handlers.setdefault(event.__name__, []).append(func)
+            return func
+
+        return wrapper
+
+    async def handle_event(self, event: Event) -> None:
+        handlers = self.handlers.get(event.__class__.__name__, [])
+        await asyncio.gather(*[handler(event, self) for handler in handlers])
