@@ -1,6 +1,8 @@
 # ruff: noqa: A003
 from __future__ import annotations
 
+from enum import Enum
+
 from pydantic import BaseModel
 
 
@@ -31,28 +33,32 @@ class Role(BaseModel):
     """大别野 id"""
 
 
-class Basic(BaseModel):
-    uid: str
-    """用户 id"""
+class MemberBasic(BaseModel):
+    uid: int
+    """用户 uid"""
+
     nickname: str
-    """用户昵称"""
+    """昵称"""
+
     introduce: str
-    """用户简介"""
+    """个性签名"""
+
     avatar: str
-    """头像 id"""
+    """头像"""
     avatar_url: str
     """"""
 
 
 class Member(BaseModel):
-    basic: Basic
-    """"""
-    role_id_list: list[str]
-    """"""
+    basic: MemberBasic
+    """用户基本信息"""
+
+    role_id_list: list[int]
+    """用户加入的身份组 id 列表"""
+
     joined_at: str
-    """用户加入大别野时间戳"""
+    """用户加入时间 (ISO8601 timestamp)"""
     role_list: list[Role]
-    """"""
 
 
 class BotMemberAccessInfo(BaseModel):
@@ -86,3 +92,42 @@ class Villa(BaseModel):
 
     tags: list[str]
     """标签"""
+
+
+class RoomType(str, Enum):
+    CHAT_ROOM = "BOT_PLATFORM_ROOM_TYPE_CHAT_ROOM"
+    """聊天房间"""
+    POST_ROOM = "BOT_PLATFORM_ROOM_TYPE_POST_ROOM"
+    """帖子房间"""
+    SCENE_ROOM = "BOT_PLATFORM_ROOM_TYPE_SCENE_ROOM"
+    """场景房间"""
+    INVALID = "BOT_PLATFORM_ROOM_TYPE_INVALID"
+    """无效"""
+
+
+class SendMsgAuthRange(BaseModel):
+    is_all_send_msg: bool
+    """是否全局可发送"""
+
+    roles: list[int]
+    """可发消息的身份组 id"""
+
+
+class Room(BaseModel):
+    room_id: int
+    """房间 id"""
+
+    room_name: str
+    """房间名称"""
+
+    room_type: RoomType
+    """房间类型"""
+
+    group_id: int
+    """分组 id"""
+
+    room_default_notify_type: str
+    """房间默认通知类型"""
+
+    send_msg_auth_range: SendMsgAuthRange
+    """房间消息发送权限范围设置"""

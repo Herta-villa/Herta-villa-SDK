@@ -18,6 +18,7 @@ async def hello(request: web.Request):
             try:
                 event = parse_event(event_payload)  # noqa: F841
                 ...
+                # print(event.dict())
                 return web.json_response({"message": "", "retcode": 0})
 
             except ValueError:

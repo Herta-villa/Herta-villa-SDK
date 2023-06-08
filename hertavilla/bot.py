@@ -1,9 +1,15 @@
 from __future__ import annotations
 
-from typing import Any, Literal
+import json
+from typing import TYPE_CHECKING, Any, Literal
 
 from hertavilla.exception import raise_exception
-from hertavilla.model import BotMemberAccessInfo, Villa
+from hertavilla.model import BotMemberAccessInfo, Member, Room, Villa
+from hertavilla.utils import MsgEncoder
+
+if TYPE_CHECKING:
+    from hertavilla.message import MessageChain, MsgContentInfo
+
 
 from aiohttp import ClientSession
 
@@ -11,10 +17,24 @@ BASE_API = "https://bbs-api.miyoushe.com/vila/api/bot/platform"
 
 
 class VillaBot:
-    def __init__(self, bot_id: str, secret: str) -> None:
+    def __init__(
+        self,
+        bot_id: str,
+        secret: str,
+        name: str | None = None,
+    ) -> None:
         self.bot_id = bot_id
         self.secret = secret
+        self._name = name
         self._session = ClientSession()
+
+    @property
+    def name(self) -> str | None:
+        return self._name
+
+    @name.setter
+    def name(self, value: str) -> None:
+        self.name = value
 
     def _make_header(self, villa_id: int) -> dict[str, str]:
         return {
@@ -46,6 +66,7 @@ class VillaBot:
         data: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
     ):
+        # print(data)
         async with self._session.request(
             method,
             f"{BASE_API}{api}",
@@ -55,6 +76,7 @@ class VillaBot:
         ) as resp:
             payload = await resp.json()
             raise_exception(payload)
+            # print(payload["data"])
             return payload["data"]
 
     async def check_member_bot_access_token(
@@ -97,16 +119,104 @@ class VillaBot:
             )["villa"],
         )
 
+    async def get_room(self, villa_id: int, room_id: int) -> Room:
+        """获取房间
+
+        Args:
+            villa_id (int): 大别野 id
+            room_id (int): 房间 id
+
+        Returns:
+            Room: 房间信息
+        """
+        return Room.parse_obj(
+            (
+                await self.base_request(
+                    "/getRoom",
+                    "GET",
+                    villa_id,
+                    params={"room_id": room_id},
+                )
+            )["room"],
+        )
+
+    async def get_member(self, villa_id: int, uid: int) -> Member:
+        """获取用户信息
+
+        Args:
+            villa_id (int): 大别野 id
+            uid (int): 用户 id
+
+        Returns:
+            Member: 用户详情
+        """
+        return Member.parse_obj(
+            (
+                await self.base_request(
+                    "/getMember",
+                    "GET",
+                    villa_id,
+                    params={"uid": uid},
+                )
+            )["member"],
+        )
+
+    async def send_message(
+        self,
+        villa_id: int,
+        room_id: int,
+        msg_content_info: "MsgContentInfo",
+        object_name: str = "MHY:Text",
+    ) -> str:
+        """发送消息
+
+        Args:
+            villa_id (int): 大别野 id
+            room_id (int): 房间 id
+            msg_content_info (MsgContentInfo): 消息信息
+            object_name (str, optional): 消息类型，目前支持: MHY:Text 文本类型. Defaults to "MHY:Text".
+
+        Returns:
+            str: bot_msg_id 机器人所发送消息的唯一标识符
+        """  # noqa: E501
+        return (
+            await self.base_request(
+                "/sendMessage",
+                "POST",
+                villa_id,
+                data={
+                    "room_id": room_id,
+                    "object_name": object_name,
+                    "msg_content": json.dumps(
+                        msg_content_info,
+                        ensure_ascii=False,
+                        cls=MsgEncoder,
+                    ),
+                },
+            )
+        )["bot_msg_id"]
+
+    async def send(
+        self,
+        villa_id: int,
+        room_id: int,
+        chain: "MessageChain",
+    ) -> str:
+        """通用发送消息方法
+
+        Args:
+            villa_id (int): 大别野 id
+            room_id (int): 房间 id
+            chain (MessageChain): 消息链
+
+        Returns:
+            str: bot_msg_id 机器人所发送消息的唯一标识符
+        """
+        return await self.send_message(
+            villa_id,
+            room_id,
+            await chain.to_content_json(self),
+        )
+
     async def close(self) -> None:
         await self._session.close()
-
-
-if __name__ == "__main__":
-    import asyncio
-
-    async def main():
-        bot = VillaBot("", "")
-        print(await bot.get_villa(1785))  # noqa: T201
-        await bot.close()
-
-    asyncio.run(main())

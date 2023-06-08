@@ -1,7 +1,6 @@
 # ruff: noqa: A003
 from __future__ import annotations
 
-from datetime import datetime
 import sys
 from typing import Any, Literal, Type
 
@@ -42,11 +41,11 @@ class Event(BaseModel):
     """用户机器人访问凭证"""
     type: int
     """事件类型"""
-    created_at: datetime
+    created_at: int
     """事件创建时间"""
     id: str
     """事件 id"""
-    send_at: datetime
+    send_at: int
     """事件回调时间"""
 
     def __init_subclass__(cls: Type[Self]) -> None:
@@ -66,7 +65,7 @@ class JoinVillaEvent(Event):
     """用户 id"""
     join_user_nickname: str
     """用户昵称"""
-    join_at: datetime
+    join_at: int
     """用户加入时间"""
 
 
@@ -78,7 +77,7 @@ class SendMessageEvent(Event):
     """消息内容"""
     from_user_id: int
     """发送者 id"""
-    send_at: datetime
+    send_at: int
     """发送时间的时间戳"""
     room_id: int
     """房间 id"""
