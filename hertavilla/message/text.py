@@ -1,26 +1,19 @@
 from __future__ import annotations
 
 import abc
-from typing import Any, List, Literal, TypedDict, cast
+from typing import Any, Literal, TypedDict, cast
 
 from hertavilla.bot import VillaBot
-
-
-def _c(text: str) -> int:
-    return (len(text.encode("utf-16")) // 2) - 1
-
-
-def _rc(length: int) -> int:
-    return (length + 1) * 2
-
+from hertavilla.message.types import MsgContent, MsgContentInfo, _Segment
+from hertavilla.utils import _c
 
 entity_types: dict[str, type["_TextEntity"]] = {}
 
-# define TypedDicts for typing
+# MsgContentInfo for text
 
 
-class MsgContentInfo(TypedDict):
-    content: MsgContent
+class TextMsgContentInfo(MsgContentInfo):
+    content: TextMsgContent
     mentionedInfo: MentionedInfo | None
     quote: QuoteInfo | None
 
@@ -55,14 +48,13 @@ class EntityDict(TypedDict):
     offset: int
 
 
-class MsgContent:
-    ...
+# Segment for text
 
 
-class _TextEntity(abc.ABC):
+class _TextEntity(_Segment, abc.ABC):
     type_: str
 
-    def __init__(self, **kwargs) -> None:  # noqa: B027
+    def __init__(self, **kwargs) -> None:
         ...
 
     @abc.abstractmethod
@@ -163,72 +155,72 @@ class Quote(_TextEntity):
         raise NotImplementedError
 
 
+# MsgContent for text
+
+
 class TextMsgContent(MsgContent):
     def __init__(self, text: str, entities: list[EntityDict]) -> None:
         self.text = text
         self.entities = entities
 
 
-class MessageChain(List[_TextEntity]):
-    def append(self, __object: _TextEntity | str) -> None:
-        if isinstance(__object, str):
-            __object = Text(__object)
-        super().append(__object)
-
-    async def to_content_json(self, bot: VillaBot) -> MsgContentInfo:
-        texts: list[str] = []
-        entities: list[EntityDict] = []
-        mentioned_info: MentionedInfo | None = None
-        quote: QuoteInfo | None = None
-        offset = 0
-        for i, entity in enumerate(self):
-            if isinstance(entity, Quote):
-                # 存在 Quote Entity 转换成 quote
-                message_id = entity.message_id
-                time = entity.time
-                quote = cast(
-                    QuoteInfo,
-                    {
-                        "original_message_id": message_id,
-                        "original_message_send_time": time,
-                        "quoted_message_id": message_id,
-                        "quoted_message_send_time": time,
-                    },
-                )
-                continue
-            # 非文字 entity 尾随空格，最末除外
-            space = "" if i == len(self) - 1 else " "
-            if isinstance(entity, Text):
-                text = str(entity)
-                length = len(text)
-            else:
-                text = f"{await entity.get_text(bot)}{space}"
-                length = _c(text)
-                entities.append(
-                    {
-                        "entity": {"type": entity.type_, **entity.__dict__},
-                        "length": length,
-                        "offset": offset,
-                    },
-                )
-                if mention := entity.get_mention():
-                    type_, id_ = mention
-                    if mentioned_info is None:
-                        user_id_list = []
-                        mentioned_info = cast(
-                            MentionedInfo,
-                            {"type": type_, "userIdList": user_id_list},
-                        )
-                    else:
-                        if mentioned_info["type"] != 1:
-                            mentioned_info["type"] = type_
-                        user_id_list = mentioned_info["userIdList"]
-                    if type_ != 1:
-                        user_id_list.append(id_)
-            offset += len(text)
-            texts.append(text)
-        return {
-            "content": TextMsgContent("".join(texts), entities),
-            "quote": quote,
-            "mentionedInfo": mentioned_info,
-        }
+async def text_to_content(
+    text_entities: list[_TextEntity],
+    bot: VillaBot,
+) -> TextMsgContentInfo:
+    texts: list[str] = []
+    entities: list[EntityDict] = []
+    mentioned_info: MentionedInfo | None = None
+    quote: QuoteInfo | None = None
+    offset = 0
+    for i, entity in enumerate(text_entities):
+        if isinstance(entity, Quote):
+            # 存在 Quote Entity 转换成 quote
+            message_id = entity.message_id
+            time = entity.time
+            quote = cast(
+                QuoteInfo,
+                {
+                    "original_message_id": message_id,
+                    "original_message_send_time": time,
+                    "quoted_message_id": message_id,
+                    "quoted_message_send_time": time,
+                },
+            )
+            continue
+        # 非文字 entity 尾随空格，最末除外
+        space = "" if i == len(text_entities) - 1 else " "
+        if isinstance(entity, Text):
+            text = str(entity)
+            length = len(text)
+        else:
+            text = f"{await entity.get_text(bot)}{space}"
+            length = _c(text)
+            entities.append(
+                {
+                    "entity": {"type": entity.type_, **entity.__dict__},
+                    "length": length,
+                    "offset": offset,
+                },
+            )
+            if mention := entity.get_mention():
+                type_, id_ = mention
+                if mentioned_info is None:
+                    user_id_list = []
+                    mentioned_info = cast(
+                        MentionedInfo,
+                        {"type": type_, "userIdList": user_id_list},
+                    )
+                else:
+                    if mentioned_info["type"] != 1:
+                        mentioned_info["type"] = type_
+                    user_id_list = mentioned_info["userIdList"]
+                if type_ != 1:
+                    user_id_list.append(id_)
+        offset += len(text)
+        texts.append(text)
+    return {
+        "content": TextMsgContent("".join(texts), entities),
+        "quote": quote,
+        "mentionedInfo": mentioned_info,
+    }
