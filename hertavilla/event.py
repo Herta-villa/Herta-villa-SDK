@@ -126,8 +126,8 @@ class MessageContent(BaseModel):
         entities = v["entities"]
         last_offset = 0
         last_length = 0
+        end_offset = 0
         for entity in entities:
-            end_offset = last_offset + last_length
             entity: EntityDict
             offset = entity["offset"]
             body = entity["entity"]
@@ -141,6 +141,12 @@ class MessageContent(BaseModel):
                 chain.append(entity_types[type_](**body))
             last_offset = offset
             last_length = entity["length"]
+            end_offset = last_offset + last_length
+        if _rc(end_offset) != len(text):
+            # 最后一个 Entity 之后是文字
+            chain.append(
+                Text(text[_rc(end_offset) :].decode("utf-16")),
+            )
         return chain
 
 
