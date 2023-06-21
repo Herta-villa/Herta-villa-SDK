@@ -18,7 +18,8 @@ from hertavilla.utils import MsgEncoder
 
 if TYPE_CHECKING:
     from hertavilla.event import Event
-    from hertavilla.message import MessageChain, MsgContentInfo
+    from hertavilla.message import MessageChain
+    from hertavilla.message.types import MsgContentInfo
 
 
 from aiohttp import ClientSession
@@ -231,7 +232,7 @@ class VillaBot:
         return await self.send_message(
             villa_id,
             room_id,
-            await chain.to_content_json(self),
+            *(await chain.to_content_json(self)),
         )
 
     # event handle

@@ -7,11 +7,15 @@ from .event import (
     SendMessageEvent as SendMessageEvent,
 )
 from .message import (
+    Image as Image,
+    Link as Link,
     MentionedAll as MentionedAll,
-    MentionedInfo as MentionedInfo,
     MentionedRobot as MentionedRobot,
     MentionedUser as MentionedUser,
     MessageChain as MessageChain,
+    Post as Post,
+    Quote as Quote,
+    VillaRoomLink as VillaRoomLink,
 )
 from .server import run as run
 from .version import __version__ as __version__

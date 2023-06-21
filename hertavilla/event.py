@@ -6,14 +6,16 @@ import sys
 from typing import Any, Literal, Type
 
 from hertavilla.message import (
+    MessageChain,
+)
+from hertavilla.message.text import (
     EntityDict,
     MentionedInfo,
-    MessageChain,
     QuoteInfo,
     Text,
-    _rc,
     entity_types,
 )
+from hertavilla.utils import _rc
 
 from pydantic import BaseModel, Field, create_model_from_typeddict, validator
 
