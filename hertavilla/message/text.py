@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import abc
 from typing import Any, Literal, TypedDict, cast
 
 from hertavilla.bot import VillaBot
@@ -51,15 +50,11 @@ class EntityDict(TypedDict):
 # Segment for text
 
 
-class _TextEntity(_Segment, abc.ABC):
+class _TextEntity(_Segment):
     type_: str
 
     def __init__(self, **kwargs) -> None:
         ...
-
-    @abc.abstractmethod
-    async def get_text(self, bot: VillaBot) -> str:
-        raise NotImplementedError
 
     def get_mention(self) -> tuple[Literal[1, 2], str] | None:
         return None

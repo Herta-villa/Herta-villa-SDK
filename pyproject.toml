@@ -54,7 +54,7 @@ select = [
   "ASYNC",    # flake8-async
 ]
 
-allowed-confusables = ["，", "。"]
+allowed-confusables = ["，", "。", "（", "）"]
 
 [tool.ruff.isort]
 force-sort-within-sections = true

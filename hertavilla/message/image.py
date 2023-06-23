@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional, TypedDict, cast
 
+from hertavilla.bot import VillaBot
 from hertavilla.message.types import (
     MsgContent,
     MsgContentInfo,
@@ -38,6 +39,9 @@ class Image(_Segment):
             )
         self.url = url
         self.file_size = file_size
+
+    async def get_text(self, _: VillaBot) -> str:
+        return "[图片]"
 
 
 # MsgContent for image

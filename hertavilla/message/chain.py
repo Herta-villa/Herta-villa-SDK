@@ -24,8 +24,37 @@ class MessageChain(List[_Segment]):
         for segment in self:
             if isinstance(segment, Image):
                 return image_to_content(segment), "MHY:Image"
-            elif isinstance(segment, Post):  # noqa: RET505
+            if isinstance(segment, Post):
                 return post_to_content(segment), "MHY:Post"
-            else:
-                text_entities.append(segment)
+            text_entities.append(segment)
         return await text_to_content(text_entities, bot), "MHY:Text"
+
+    async def get_text(
+        self,
+        bot: VillaBot,
+    ) -> str:
+        """获取文本（每段消息的文本形式）。
+        需要注意此函数与 plaintext 不同。
+
+        Args:
+            bot (VillaBot): 大别野 Bot
+
+        Returns:
+            str: 文本内容
+        """
+        return "".join(
+            map(lambda x: await x.get_text(bot), self),  # noqa: C417
+        )
+
+    @property
+    def plaintext(self) -> str:
+        """获取纯文本。
+        需要注意此属性与 get_text() 不同。
+
+        Returns:
+            str: 纯文本内容
+        """
+        return "".join(map(str, filter(lambda x: isinstance(x, Text), self)))
+
+    def __str__(self) -> str:
+        return self.plaintext
