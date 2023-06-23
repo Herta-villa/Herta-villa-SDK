@@ -63,7 +63,14 @@ class Event(BaseModel):
 
     def __init_subclass__(cls: Type[Self]) -> None:
         super().__init_subclass__()
-        type_: int = eval(cls.__annotations__["type"]).__args__[0]  # 获取类型
+        literal = cls.__annotations__["type"]
+        type_: int = (
+            eval(cls.__annotations__["type"])
+            if isinstance(literal, str)
+            else literal
+        ).__args__[
+            0
+        ]  # 获取类型
         name = cls.__name__.replace("Event", "")  # 获取名称
         events[type_] = cls, name
 

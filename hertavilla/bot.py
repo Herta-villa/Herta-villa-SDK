@@ -8,7 +8,9 @@ from typing import (
     Any,
     Callable,
     Coroutine,
+    Generic,
     Literal,
+    NamedTuple,
     TypeVar,
 )
 
@@ -31,6 +33,17 @@ TE = TypeVar("TE", bound="Event")
 logger = logging.getLogger("hertavilla.bot")
 
 
+class Handler(NamedTuple, Generic[TE]):
+    event: type[TE]
+    func: Callable[[TE, VillaBot], Coroutine[Any, Any, None]]
+
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        return self.func(*args, **kwargs)
+
+    def __eq__(self, __value: Event) -> bool:
+        return isinstance(__value, self.event)
+
+
 class VillaBot:
     def __init__(
         self,
@@ -43,7 +56,7 @@ class VillaBot:
         self.secret = secret
         self._name = name
         self.callback_endpoint = callback_endpoint
-        self.handlers = {}
+        self.handlers: list[Handler] = []
 
     @property
     def name(self) -> str | None:
@@ -246,13 +259,13 @@ class VillaBot:
         def wrapper(
             func: Callable[[TE, VillaBot], Coroutine[Any, Any, None]],
         ) -> Callable[[TE, VillaBot], Coroutine[Any, Any, None]]:
-            self.handlers.setdefault(event.__name__, []).append(func)
+            self.handlers.append(Handler[TE](event, func))
             logger.info(f"Registered the handler {func} for {event.__name__}")
             return func
 
         return wrapper
 
     async def handle_event(self, event: Event) -> None:
-        handlers = self.handlers.get(event.__class__.__name__, [])
-        logger.info(f"Handling event for {len(handlers)} handler(s)")
+        handlers = filter(lambda x: x == event, self.handlers)
+        logger.info(f"Handling event {event.__class__.__name__}")
         await asyncio.gather(*[handler(event, self) for handler in handlers])
