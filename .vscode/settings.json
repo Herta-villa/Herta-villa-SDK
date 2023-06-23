@@ -3,5 +3,13 @@
     "editor.defaultFormatter": "ms-python.black-formatter"
   },
   "python.formatting.provider": "none",
-  "cSpell.words": ["aiohttp", "herta", "hertavilla", "retcode", "sourcery"]
+  "cSpell.words": [
+    "aiohttp",
+    "herta",
+    "hertavilla",
+    "pypi",
+    "retcode",
+    "sourcery",
+    "startswith"
+  ]
 }
