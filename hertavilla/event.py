@@ -61,6 +61,10 @@ class Event(BaseModel):
     send_at: int
     """事件回调时间"""
 
+    @property
+    def villa_id(self) -> int:
+        return self.robot.villa_id
+
     def __init_subclass__(cls: Type[Self]) -> None:
         super().__init_subclass__()
         literal = cls.__annotations__["type"]
@@ -182,6 +186,10 @@ class SendMessageEvent(Event):
     @validator("content", pre=True)
     def str_to_json(cls, v: Any):
         return json.loads(v)
+
+    @property
+    def message(self) -> MessageChain:
+        return self.content.content
 
 
 def parse_event(payload: dict[str, Any]) -> Event:
