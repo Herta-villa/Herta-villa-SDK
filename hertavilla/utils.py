@@ -9,7 +9,7 @@ class MsgEncoder(json.JSONEncoder):
 
         if isinstance(obj, MsgContent):
             data = obj.__dict__
-            for k in data.keys():
+            for k in data.copy().keys():
                 if k.startswith("_"):
                     data.pop(k)
             return data

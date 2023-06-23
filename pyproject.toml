@@ -1,7 +1,6 @@
 
 [project]
 name = "herta-villa-sdk"
-version = "0.3.0"
 description = "大别野「黑塔」Python SDK"
 authors = [
     {name = "MingxuanGame", email = "MingxuanGame@outlook.com"},
@@ -14,6 +13,7 @@ requires-python = ">=3.8"
 readme = "README.md"
 license = {text = "MIT"}
 keywords = ["mihoyo", "miyoushe", "bot", "villa"]
+dynamic = ["version"]
 
 [project.urls]
 Homepage = "https://github.com/MingxuanGame/Herta-villa-SDK"
@@ -21,9 +21,17 @@ Documentation = "https://github.com/MingxuanGame/Herta-villa-SDK"
 Repository = "https://github.com/MingxuanGame/Herta-villa-SDK"
 "Bug Tracker" = "https://github.com/MingxuanGame/Herta-villa-SDK/issues"
 
+[project.optional-dependencies]
+test = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+]
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
+
+[tool.pdm]
+version = { source = "file", path = "hertavilla/version.py" }
 
 [tool.pdm.dev-dependencies]
 dev = [
