@@ -19,7 +19,7 @@ from hertavilla.model import BotMemberAccessInfo, Member, Room, Villa
 from hertavilla.utils import MsgEncoder
 
 if TYPE_CHECKING:
-    from hertavilla.event import Event
+    from hertavilla.event import Command, Event, Template
     from hertavilla.message import MessageChain
     from hertavilla.message.types import MsgContentInfo
 
@@ -50,21 +50,44 @@ class VillaBot:
         bot_id: str,
         secret: str,
         callback_endpoint: str,
-        name: str | None = None,
+        bot_info: "Template" | None = None,
     ) -> None:
         self.bot_id = bot_id
         self.secret = secret
-        self._name = name
+        self._bot_info = bot_info
         self.callback_endpoint = callback_endpoint
         self.handlers: list[Handler] = []
 
     @property
-    def name(self) -> str | None:
-        return self._name
+    def bot_info(self) -> "Template":
+        assert (
+            self._bot_info is not None
+        ), f"No bot info, maybe bot {self.bot_id} not connected"
+        return self._bot_info
 
-    @name.setter
-    def name(self, value: str) -> None:
-        self.name = value
+    @bot_info.setter
+    def bot_info(self, value: "Template") -> None:
+        self._bot_info = value
+
+    @property
+    def name(self) -> str:
+        """Bot 昵称"""
+        return self.bot_info.name
+
+    @property
+    def avatar(self) -> str:
+        """Bot 头像地址"""
+        return self.bot_info.icon
+
+    @property
+    def commands(self) -> list["Command"]:
+        """Bot 预设命令列表"""
+        return self.bot_info.commands
+
+    @property
+    def description(self) -> str:
+        """Bot 介绍"""
+        return self.bot_info.desc
 
     def _make_header(self, villa_id: int) -> dict[str, str]:
         return {

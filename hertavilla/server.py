@@ -26,8 +26,8 @@ async def _run_handles(event: Event):
                 f"in villa {event.robot.villa_id}"
             ),
         )
-        if bot.name is None:
-            bot.name = event.robot.template.name
+        if bot.bot_info is None:
+            bot.bot_info = event.robot.template
         try:
             task = asyncio.create_task(bot.handle_event(event))
             background_tasks.add(task)
