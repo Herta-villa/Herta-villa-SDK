@@ -26,7 +26,7 @@ async def _run_handles(event: Event):
                 f"in villa {event.robot.villa_id}"
             ),
         )
-        if bot.bot_info is None:
+        if bot._bot_info is None:  # noqa: SLF001
             bot.bot_info = event.robot.template
         try:
             task = asyncio.create_task(bot.handle_event(event))

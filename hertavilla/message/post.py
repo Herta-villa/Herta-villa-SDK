@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-from hertavilla.bot import VillaBot
+from typing import TYPE_CHECKING
+
 from hertavilla.message.types import (
     MsgContent,
     MsgContentInfo,
     _Segment,
 )
+
+if TYPE_CHECKING:
+    from hertavilla.bot import VillaBot
 
 
 # MsgContentInfo for post

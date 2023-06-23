@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from typing import List
+from typing import TYPE_CHECKING, List
 
-from hertavilla.bot import VillaBot
 from hertavilla.message.image import Image, image_to_content
 from hertavilla.message.post import Post, post_to_content
 from hertavilla.message.text import Text, text_to_content
 from hertavilla.message.types import MsgContentInfo, _Segment
+
+if TYPE_CHECKING:
+    from hertavilla.bot import VillaBot
 
 
 class MessageChain(List[_Segment]):
@@ -31,7 +33,7 @@ class MessageChain(List[_Segment]):
 
     async def get_text(
         self,
-        bot: VillaBot,
+        bot: "VillaBot",
     ) -> str:
         """获取文本（每段消息的文本形式）。
         需要注意此函数与 plaintext 不同。
@@ -42,9 +44,7 @@ class MessageChain(List[_Segment]):
         Returns:
             str: 文本内容
         """
-        return "".join(
-            map(lambda x: await x.get_text(bot), self),  # noqa: C417
-        )
+        return "".join([await x.get_text(bot) for x in self])
 
     @property
     def plaintext(self) -> str:

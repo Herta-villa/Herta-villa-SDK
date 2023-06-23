@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import Any, Literal, TypedDict, cast
+from typing import TYPE_CHECKING, Any, Literal, TypedDict, cast
 
-from hertavilla.bot import VillaBot
 from hertavilla.message.types import MsgContent, MsgContentInfo, _Segment
 from hertavilla.utils import _c
+
+if TYPE_CHECKING:
+    from hertavilla.bot import VillaBot
 
 entity_types: dict[str, type["_TextEntity"]] = {}
 

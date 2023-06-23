@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-from typing import Optional, TypedDict, cast
+from typing import TYPE_CHECKING, Optional, TypedDict, cast
 
-from hertavilla.bot import VillaBot
 from hertavilla.message.types import (
     MsgContent,
     MsgContentInfo,
     _Segment,
 )
+
+if TYPE_CHECKING:
+    from hertavilla.bot import VillaBot
 
 
 # MsgContentInfo for image

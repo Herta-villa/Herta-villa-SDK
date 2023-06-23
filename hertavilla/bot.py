@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import re
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -15,11 +16,12 @@ from typing import (
 )
 
 from hertavilla.exception import raise_exception
+from hertavilla.match import Endswith, Keywords, Match, Regex, Startswith
 from hertavilla.model import BotMemberAccessInfo, Member, Room, Villa
 from hertavilla.utils import MsgEncoder
 
 if TYPE_CHECKING:
-    from hertavilla.event import Command, Event, Template
+    from hertavilla.event import Command, Event, SendMessageEvent, Template
     from hertavilla.message import MessageChain
     from hertavilla.message.types import MsgContentInfo
 
@@ -29,6 +31,11 @@ from aiohttp import ClientSession
 BASE_API = "https://bbs-api.miyoushe.com/vila/api/bot/platform"
 
 TE = TypeVar("TE", bound="Event")
+
+MessageHandlerFunc = Callable[
+    ["SendMessageEvent", "VillaBot"],
+    Coroutine[Any, Any, None],
+]
 
 logger = logging.getLogger("hertavilla.bot")
 
@@ -44,6 +51,17 @@ class Handler(NamedTuple, Generic[TE]):
         return isinstance(__value, self.event)
 
 
+class MessageHandler(NamedTuple):
+    match: Match
+    func: Callable[["SendMessageEvent", VillaBot], Coroutine[Any, Any, None]]
+
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        return self.func(*args, **kwargs)
+
+    def check(self, chain: MessageChain) -> bool:
+        return self.match.check(chain)
+
+
 class VillaBot:
     def __init__(
         self,
@@ -52,11 +70,15 @@ class VillaBot:
         callback_endpoint: str,
         bot_info: "Template" | None = None,
     ) -> None:
+        from hertavilla.event import SendMessageEvent
+
         self.bot_id = bot_id
         self.secret = secret
         self._bot_info = bot_info
         self.callback_endpoint = callback_endpoint
         self.handlers: list[Handler] = []
+        self.message_handlers: list[MessageHandler] = []
+        self.register_handler(SendMessageEvent, self.message_handler)
 
     @property
     def bot_info(self) -> "Template":
@@ -272,6 +294,16 @@ class VillaBot:
         )
 
     # event handle
+
+    def register_handler(
+        self,
+        event: type[TE],
+        func: Callable[[TE, VillaBot], Coroutine[Any, Any, None]],
+    ):
+        self.handlers.append(Handler[TE](event, func))
+        logger.info(f"Registered the handler {func} for {event.__name__}")
+        return func
+
     def listen(
         self,
         event: type[TE],
@@ -282,8 +314,7 @@ class VillaBot:
         def wrapper(
             func: Callable[[TE, VillaBot], Coroutine[Any, Any, None]],
         ) -> Callable[[TE, VillaBot], Coroutine[Any, Any, None]]:
-            self.handlers.append(Handler[TE](event, func))
-            logger.info(f"Registered the handler {func} for {event.__name__}")
+            self.register_handler(event, func)
             return func
 
         return wrapper
@@ -292,3 +323,77 @@ class VillaBot:
         handlers = filter(lambda x: x == event, self.handlers)
         logger.info(f"Handling event {event.__class__.__name__}")
         await asyncio.gather(*[handler(event, self) for handler in handlers])
+
+    # message handle
+    @staticmethod
+    async def message_handler(event: "SendMessageEvent", bot: "VillaBot"):
+        handlers = filter(
+            lambda x: x.check(event.message),
+            bot.message_handlers,
+        )
+        await asyncio.gather(*[handler(event, bot) for handler in handlers])
+
+    def register_msg_handler(self, match: Match, func: MessageHandlerFunc):
+        self.message_handlers.append(MessageHandler(match, func))
+        logger.info(f"Registered the handler {func} with {match}")
+        return func
+
+    def match(
+        self,
+        match: Match,
+    ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
+        def wrapper(
+            func: MessageHandlerFunc,
+        ) -> MessageHandlerFunc:
+            self.register_msg_handler(match, func)
+            return func
+
+        return wrapper
+
+    def regex(
+        self,
+        pattern: str | re.Pattern,
+    ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
+        def wrapper(
+            func: MessageHandlerFunc,
+        ) -> MessageHandlerFunc:
+            self.register_msg_handler(Regex(pattern), func)
+            return func
+
+        return wrapper
+
+    def startswith(
+        self,
+        prefix: str,
+    ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
+        def wrapper(
+            func: MessageHandlerFunc,
+        ) -> MessageHandlerFunc:
+            self.register_msg_handler(Startswith(prefix), func)
+            return func
+
+        return wrapper
+
+    def endswith(
+        self,
+        suffix: str,
+    ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
+        def wrapper(
+            func: MessageHandlerFunc,
+        ) -> MessageHandlerFunc:
+            self.register_msg_handler(Endswith(suffix), func)
+            return func
+
+        return wrapper
+
+    def keyword(
+        self,
+        *keywords: str,
+    ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
+        def wrapper(
+            func: MessageHandlerFunc,
+        ) -> MessageHandlerFunc:
+            self.register_msg_handler(Keywords(*keywords), func)
+            return func
+
+        return wrapper
