@@ -5,7 +5,6 @@
 ![python version](https://img.shields.io/badge/Python-3.8+-green)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-
 大别野「黑塔」Python SDK
 
 ## 特性
@@ -22,7 +21,7 @@ pip install herta-villa-sdk
 
 ## 快速开始
 
-你需要拥有一个[大别野](https://dby.miyoushe.com/chat)机器人。可前往大别野[「机器人开发者社区」](https://dby.miyoushe.com/chat/463/20020)]（`OpenVilla`）申请。
+你需要拥有一个[大别野](https://dby.miyoushe.com/chat)机器人。可前往大别野[「机器人开发者社区」](https://dby.miyoushe.com/chat/463/20020)（`OpenVilla`）申请。
 
 ```python
 from hertavilla import MessageChain, SendMessageEvent, VillaBot, run
