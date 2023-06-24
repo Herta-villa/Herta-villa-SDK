@@ -265,7 +265,7 @@ dependencies = [
 lock_version = "4.2"
 cross_platform = true
 groups = ["default", "dev", "test"]
-content_hash = "sha256:5a29d51209b40cdb59f3f5d513d33e286d4d4d7f3dddff95ad8287d5afe7d639"
+content_hash = "sha256:59eaa5d49bf5eaa1e7b3def241a2e78b6b5d5a68e56a515826695a9233e29ead"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
