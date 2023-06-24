@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from enum import Enum
+from typing import List
 
 from pydantic import BaseModel
 
@@ -53,12 +54,12 @@ class Member(BaseModel):
     basic: MemberBasic
     """用户基本信息"""
 
-    role_id_list: list[int]
+    role_id_list: List[int]
     """用户加入的身份组 id 列表"""
 
     joined_at: str
     """用户加入时间 (ISO8601 timestamp)"""
-    role_list: list[Role]
+    role_list: List[Role]
 
 
 class BotMemberAccessInfo(BaseModel):
@@ -90,7 +91,7 @@ class Villa(BaseModel):
     category_id: int
     """"""
 
-    tags: list[str]
+    tags: List[str]
     """标签"""
 
 
@@ -109,7 +110,7 @@ class SendMsgAuthRange(BaseModel):
     is_all_send_msg: bool
     """是否全局可发送"""
 
-    roles: list[int]
+    roles: List[int]
     """可发消息的身份组 id"""
 
 

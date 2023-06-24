@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Any, Literal, Type
+from typing import Any, List, Literal, Optional, Type
 
 from hertavilla.message import (
     MessageChain,
@@ -37,7 +37,7 @@ class Template(BaseModel):
     name: str
     desc: str
     icon: str
-    commands: list[Command]
+    commands: List[Command]
 
 
 class Robot(BaseModel):
@@ -124,13 +124,13 @@ class Trace(BaseModel):
 
 class MessageContent(BaseModel):
     content: MessageChain
-    mentioned_info: MentionedInfoModel | None = Field(  # type: ignore
+    mentioned_info: Optional[MentionedInfoModel] = Field(  # type: ignore
         None,
         alias="mentionedInfo",
     )
-    quote: QuoteInfoModel | None = None  # type: ignore
-    user: User | None = None
-    trace: Trace | None = None
+    quote: Optional[QuoteInfoModel] = None  # type: ignore
+    user: Optional[User] = None
+    trace: Optional[Trace] = None
 
     @validator("content", pre=True)
     def parse_content(cls, v: Any):
@@ -180,7 +180,7 @@ class SendMessageEvent(Event):
     """用户昵称"""
     msg_uid: str
     """消息 id"""
-    bot_msg_id: str | None
+    bot_msg_id: Optional[str]
     """如果被回复的消息从属于机器人，则该字段不为空字符串"""
 
     @validator("content", pre=True)
