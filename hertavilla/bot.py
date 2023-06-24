@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from dataclasses import dataclass
 import json
 import logging
 import re
@@ -40,7 +41,8 @@ MessageHandlerFunc = Callable[
 logger = logging.getLogger("hertavilla.bot")
 
 
-class Handler(NamedTuple, Generic[TE]):
+@dataclass
+class Handler(Generic[TE]):
     event: type[TE]
     func: Callable[[TE, VillaBot], Coroutine[Any, Any, None]]
 
