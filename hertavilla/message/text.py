@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING, Any, Literal, cast
+from typing import TYPE_CHECKING, Any, List, Literal, Optional, cast
 
 # Pydantic:
 #   TypeError: You should use `typing_extensions.TypedDict`
@@ -26,8 +26,8 @@ entity_types: dict[str, type["_TextEntity"]] = {}
 
 class TextMsgContentInfo(MsgContentInfo):
     content: TextMsgContent
-    mentionedInfo: MentionedInfo | None
-    quote: QuoteInfo | None
+    mentionedInfo: Optional[MentionedInfo]
+    quote: Optional[QuoteInfo]
 
 
 class QuoteInfo(TypedDict):
@@ -50,7 +50,7 @@ class MentionedInfo(TypedDict):
     值为1: @全员
     值为2: @部分成员"""
 
-    userIdList: list[str]
+    userIdList: List[str]
     """如果不是提及全员，应该填写被提及的用户 id 列表"""
 
 
