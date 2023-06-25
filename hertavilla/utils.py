@@ -8,7 +8,7 @@ class MsgEncoder(json.JSONEncoder):
         from hertavilla.message.types import MsgContent
 
         if isinstance(obj, MsgContent):
-            data = obj.__dict__
+            data = obj.dict()
             for k in data.copy().keys():
                 if k.startswith("_"):
                     data.pop(k)

@@ -18,9 +18,8 @@ def test_msg_encoder():
     from hertavilla.utils import MsgEncoder
 
     class TestMsgContent(MsgContent):
-        def __init__(self) -> None:
-            self.test = 1
-            self._private = 0
+        test: int = 1
+        _private: int = 0
 
     assert json.loads(json.dumps(TestMsgContent(), cls=MsgEncoder)) == {
         "test": 1,

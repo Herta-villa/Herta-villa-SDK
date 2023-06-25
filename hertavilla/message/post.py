@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 # MsgContentInfo for post
-class ImageMsgContentInfo(MsgContentInfo):
+class PostMsgContentInfo(MsgContentInfo):
     content: PostMsgContent
 
 
@@ -35,9 +35,8 @@ class Post(_Segment):
 
 # MsgContent for post
 class PostMsgContent(MsgContent):
-    def __init__(self, post_id: str) -> None:
-        self.post_id = post_id
+    post_id: str
 
 
-def post_to_content(post: Post) -> ImageMsgContentInfo:
-    return {"content": PostMsgContent(post.post_id)}
+def post_to_content(post: Post) -> PostMsgContentInfo:
+    return {"content": PostMsgContent(post_id=post.post_id)}

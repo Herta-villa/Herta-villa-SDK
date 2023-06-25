@@ -1,19 +1,10 @@
 from __future__ import annotations
 
-import sys
 from typing import TYPE_CHECKING, Any, List, Literal, Optional, cast
 
-# Pydantic:
-#   TypeError: You should use `typing_extensions.TypedDict`
-#   instead of `typing.TypedDict` with Python < 3.9.2.
-#   Without it, there is no way to differentiate
-#   required and optional fields when subclassed.
-if sys.version_info >= (3, 9, 2):
-    from typing import TypedDict
-else:
-    from typing_extensions import TypedDict
-
+from hertavilla.message.image import ImageMsgContent
 from hertavilla.message.types import MsgContent, MsgContentInfo, _Segment
+from hertavilla.typing import TypedDict
 from hertavilla.utils import _c
 
 if TYPE_CHECKING:
@@ -167,14 +158,15 @@ class Quote(_TextEntity):
 
 
 class TextMsgContent(MsgContent):
-    def __init__(self, text: str, entities: list[EntityDict]) -> None:
-        self.text = text
-        self.entities = entities
+    text: str
+    entities: List[EntityDict]
+    images: Optional[List[ImageMsgContent]] = None
 
 
 async def text_to_content(
     text_entities: list[_TextEntity],
     bot: VillaBot,
+    image: list[ImageMsgContent] | None = None,
 ) -> TextMsgContentInfo:
     texts: list[str] = []
     entities: list[EntityDict] = []
@@ -228,7 +220,11 @@ async def text_to_content(
         offset += len(text)
         texts.append(text)
     return {
-        "content": TextMsgContent("".join(texts), entities),
+        "content": TextMsgContent(
+            text="".join(texts),
+            entities=entities,
+            images=image,
+        ),
         "quote": quote,
         "mentionedInfo": mentioned_info,
     }
