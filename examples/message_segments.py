@@ -62,13 +62,12 @@ async def _(event: SendMessageEvent, bot: VillaBot):
     )  # https://www.miyoushe.com/sr/article/40569017
 
     # 请注意
-    # Image、Post 类型不能多发，以及和 Text 类型出现
-    # 如果同时出现，优先选择 Image、Post
-    chain1 = MessageChain()
-    chain1.append("1")
-    chain1.append(Image(url=""))
-    chain1.append(Post(""))
-    # 这时只会发送 Image
+    # Post:
+    #   如果存在多个 Post，SDK 会选择最后一个 Post 发送
+    #   如果存在 Text，SDK 不会发送 Post
+    # Image:
+    #   如果存在 Text，则将使用 MHY:Text 发送，Web 端无法查看图片（不受支持）
+    #   如果存在多张图片，则将使用 MHY:Text 发送，Web 端无法查看（不受支持）
 
 
 run(bot)
