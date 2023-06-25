@@ -150,8 +150,7 @@ class MessageContent(BaseModel):
                 chain.append(
                     Text(text[_rc(end_offset) : _rc(offset)].decode("utf-16")),
                 )
-            else:
-                chain.append(entity_types[type_](**body))
+            chain.append(entity_types[type_](**body))
             last_offset = offset
             last_length = entity["length"]
             end_offset = last_offset + last_length
