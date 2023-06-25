@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import abc
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING
+
+from hertavilla.typing import TypedDict
+
+from pydantic import BaseModel
 
 if TYPE_CHECKING:
     from hertavilla.bot import VillaBot
@@ -19,5 +23,5 @@ class MsgContentInfo(TypedDict):
     ...
 
 
-class MsgContent:
+class MsgContent(BaseModel):
     ...
