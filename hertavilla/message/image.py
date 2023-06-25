@@ -46,8 +46,8 @@ class Image(_Segment):
 # MsgContent for image
 class ImageMsgContent(MsgContent):
     url: str
-    size: Size | None = None
-    file_size: int | None = None
+    size: Optional[Size] = None
+    file_size: Optional[int] = None
 
 
 def image_to_content(image: Image) -> ImageMsgContent:
