@@ -95,7 +95,14 @@ class MessageChain(List[_Segment]):
         Returns:
             str: 文本内容
         """
-        return "".join([await x.get_text(bot) for x in self])
+        texts: list[str] = []
+        for i, x in enumerate(self):
+            space = "" if i == len(self) - 1 else " "
+            text = await x.get_text(bot)
+            if not isinstance(x, (Text, Image, Post)):
+                text += space
+            texts.append(text)
+        return "".join(texts)
 
     @property
     def plaintext(self) -> str:
