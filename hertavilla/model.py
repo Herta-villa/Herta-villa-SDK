@@ -104,6 +104,8 @@ class RoomType(str, Enum):
     """场景房间"""
     INVALID = "BOT_PLATFORM_ROOM_TYPE_INVALID"
     """无效"""
+    LIVE_ROOM = "BOT_PLATFORM_ROOM_TYPE_LIVE_ROOM"
+    """直播房间"""
 
 
 class SendMsgAuthRange(BaseModel):
@@ -112,6 +114,14 @@ class SendMsgAuthRange(BaseModel):
 
     roles: List[int]
     """可发消息的身份组 id"""
+
+
+class Group(BaseModel):
+    group_id: int
+    """分组 id"""
+
+    group_name: str
+    """分组名称"""
 
 
 class Room(BaseModel):
@@ -132,3 +142,28 @@ class Room(BaseModel):
 
     send_msg_auth_range: SendMsgAuthRange
     """房间消息发送权限范围设置"""
+
+
+class ListRoom(BaseModel):
+    room_id: int
+    """房间 id"""
+
+    room_name: str
+    """房间名称"""
+
+    room_type: RoomType
+    """房间类型"""
+
+    group_id: int
+    """分组 id"""
+
+
+class GroupRoom(BaseModel):
+    group_id: int
+    """分组 id"""
+
+    group_name: str
+    """分组名称"""
+
+    room_list: List[ListRoom]
+    """房间信息"""
