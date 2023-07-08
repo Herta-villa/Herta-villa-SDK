@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import json
+
 from hertavilla.apis.base import _BaseAPIMixin
 from hertavilla.message.types import MsgContentInfo
+from hertavilla.utils import MsgEncoder
 
 
 class MessageAPIMixin(_BaseAPIMixin):
@@ -23,6 +26,22 @@ class MessageAPIMixin(_BaseAPIMixin):
         Returns:
             str: bot_msg_id 机器人所发送消息的唯一标识符
         """  # noqa: E501
+        return (
+            await self.base_request(
+                "/sendMessage",
+                "POST",
+                villa_id,
+                data={
+                    "room_id": room_id,
+                    "object_name": object_name,
+                    "msg_content": json.dumps(
+                        msg_content_info,
+                        ensure_ascii=False,
+                        cls=MsgEncoder,
+                    ),
+                },
+            )
+        )["bot_msg_id"]
 
     async def pin_message(  # noqa: PLR0913
         self,
