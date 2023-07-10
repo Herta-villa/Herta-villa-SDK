@@ -17,6 +17,7 @@ from typing import (
 from hertavilla.apis.auth import AuthAPIMixin
 from hertavilla.apis.member import MemberAPIMixin
 from hertavilla.apis.message import MessageAPIMixin
+from hertavilla.apis.role import RoleAPIMixin
 from hertavilla.apis.room import RoomAPIMixin
 from hertavilla.apis.villa import VillaAPIMixin
 from hertavilla.match import Endswith, Keywords, Match, Regex, Startswith
@@ -65,6 +66,7 @@ class VillaBot(
     MessageAPIMixin,
     RoomAPIMixin,
     VillaAPIMixin,
+    RoleAPIMixin,
 ):
     def __init__(
         self,
