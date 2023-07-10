@@ -273,3 +273,14 @@ class RolePermission(str, Enum):
 
     MANAGE_SPOTLIGHT_COLLECTION = "manage_spotlight_collection"
     """设置精选消息 - 允许成员设置、移除精选消息"""
+
+
+class Emoticon(BaseModel):
+    emoticon_id: int
+    """表情 id"""
+
+    describe_text: str
+    """描述文本"""
+
+    icon: str
+    """表情图片链接"""
