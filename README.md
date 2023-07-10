@@ -51,6 +51,40 @@ run(bot)  # 运行 bot
 
 详见 [examples](./examples/) 文件夹
 
+## 支持的 API
+
+- [x] 鉴权
+  - [x] 校验用户机器人访问凭证 `/checkMemberBotAccessToken`
+- [x] 大别野
+  - [x] 获取大别野信息 `/getVilla`
+- [x] 用户
+  - [x] 获取用户信息 `/getMember`
+  - [x] 获取大别野成员列表 `/getVillaMembers`
+  - [x] 踢出大别野用户 `/deleteVillaMember`
+- [x] 消息
+  - [x] 置顶消息 `/pinMessage`
+  - [x] 撤回消息 `/recallMessage`
+  - [x] 发送消息 `/sendMessage`
+- [x] 房间
+  - [x] 创建分组 `/createGroup`
+  - [x] 编辑分组 `/editGroup`
+  - [x] 删除分组 `/deleteGroup`
+  - [x] 获取分组列表 `/getGroupList`
+  - [x] 编辑房间 `/editRoom`
+  - [x] 删除房间 `/deleteRoom`
+  - [x] 获取房间信息 `/getRoom`
+  - [x] 获取房间列表信息 `/getVillaGroupRoomList`
+- [x] 身份组
+  - [x] 向身份组操作用户 `/operateMemberToRole`
+  - [x] 创建身份组 `/createMemberRole`
+  - [x] 编辑身份组 `/editMemberRole`
+  - [x] 删除身份组 `/deleteMemberRole`
+  - [x] 获取身份组 `/getMemberRoleInfo`
+  - [x] 获取大别野下所有身份组 `/getVillaMemberRoles`
+- [x] 表态表情
+  - [x] 获取全量表情 `/getAllEmoticons`
+- [ ] 审核 `/audit`
+
 ## Bug 反馈及建议
 
 大别野 Bot 和 Herta SDK 均处于开发状态中，如遇到问题或有相关建议可通过 [Issue](https://github.com/MingxuanGame/Herta-villa-SDK/issues/new) 提出，感谢支持！
