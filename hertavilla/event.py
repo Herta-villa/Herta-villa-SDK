@@ -191,6 +191,39 @@ class SendMessageEvent(Event):
         return self.content.content
 
 
+class CreateRobotEvent(Event):
+    type: Literal[3]
+
+
+class DeleteRobotEvent(Event):
+    type: Literal[4]
+
+
+class AddQuickEmoticonEvent(Event):
+    type: Literal[5]
+
+    room_id: int
+    """房间 id"""
+
+    uid: int
+    """发送表情的用户 id"""
+
+    emoticon_id: int
+    """表情 id"""
+
+    emoticon: str
+    """表情内容"""
+
+    msg_uid: str
+    """被回复的消息 id"""
+
+    bot_msg_id: str
+    """如果被回复的消息从属于机器人，则该字段不为空字符串"""
+
+    is_cancel: bool = False
+    """是否是取消表情"""
+
+
 def parse_event(payload: dict[str, Any]) -> Event:
     type_: int = payload["type"]
     cls_, name = events[type_]
