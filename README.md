@@ -85,6 +85,15 @@ run(bot)  # 运行 bot
   - [x] 获取全量表情 `/getAllEmoticons`
 - [ ] 审核 `/audit`
 
+## 支持的事件
+
+- [x] [JoinVilla](https://webstatic.mihoyo.com/vila/bot/doc/callback.html###JoinVilla) 有新用户加入大别野
+- [x] [SendMessage](https://webstatic.mihoyo.com/vila/bot/doc/callback.html###SendMessage) 用户@机器人发送消息
+- [x] [CreateRobot](https://webstatic.mihoyo.com/vila/bot/doc/callback.html###CreateRobot) 大别野添加机器人实例
+- [x] [DeleteRobot](https://webstatic.mihoyo.com/vila/bot/doc/callback.html###DeleteRobot) 大别野删除机器人实例
+- [x] [AddQuickEmoticon](https://webstatic.mihoyo.com/vila/bot/doc/callback.html#AddQuickEmoticon) 用户使用表情回复消息表态
+- [ ] [AuditCallback](https://webstatic.mihoyo.com/vila/bot/doc/callback.html#AuditCallback) 审核结果回调
+
 ## Bug 反馈及建议
 
 大别野 Bot 和 Herta SDK 均处于开发状态中，如遇到问题或有相关建议可通过 [Issue](https://github.com/MingxuanGame/Herta-villa-SDK/issues/new) 提出，感谢支持！
