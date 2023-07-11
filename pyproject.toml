@@ -7,7 +7,7 @@ authors = [
 ]
 dependencies = [
     "aiohttp>=3.8.4",
-    "pydantic>=1.10.8",
+    "pydantic>=1.10.8,<2.0",
 ]
 requires-python = ">=3.8"
 readme = "README.md"
@@ -68,7 +68,7 @@ select = [
   "ASYNC",    # flake8-async
 ]
 
-allowed-confusables = ["，", "。", "（", "）"]
+allowed-confusables = ["，", "。", "（", "）", "；"]
 
 [tool.ruff.isort]
 force-sort-within-sections = true
