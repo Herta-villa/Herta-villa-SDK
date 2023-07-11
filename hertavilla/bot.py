@@ -180,7 +180,12 @@ class VillaBot(
     async def handle_event(self, event: Event) -> None:
         handlers = filter(lambda x: x == event, self.handlers)
         logger.info(f"Handling event {event.__class__.__name__}")
-        await asyncio.gather(*[handler(event, self) for handler in handlers])
+        try:
+            await asyncio.gather(
+                *[handler(event, self) for handler in handlers],
+            )
+        except Exception:
+            logger.exception("Raised exceptions while handling event.")
 
     # message handle
     @staticmethod

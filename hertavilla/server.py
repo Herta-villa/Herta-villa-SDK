@@ -28,18 +28,10 @@ async def _run_handles(event: Event):
         )
         if bot._bot_info is None:  # noqa: SLF001
             bot.bot_info = event.robot.template
-        try:
-            task = asyncio.create_task(bot.handle_event(event))
-            background_tasks.add(task)
-            task.add_done_callback(background_tasks.discard)
-            return web.json_response({"message": "", "retcode": 0})
-        except Exception:
-            logger.exception("Raised exceptions while handling event.")
-            raise web.HTTPInternalServerError(  # noqa: B904, TRY200
-                text=json.dumps(
-                    {"retcode": -100, "message": "internal error"},
-                ),
-            )
+        task = asyncio.create_task(bot.handle_event(event))
+        background_tasks.add(task)
+        task.add_done_callback(background_tasks.discard)
+        return web.json_response({"message": "", "retcode": 0})
     logger.warning(
         f"Received event but no bot with id {event.robot.template.id}",
     )
