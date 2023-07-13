@@ -22,12 +22,6 @@ class AIOHTTPBackend(BaseBackend):
     def name(self) -> str:
         return "AIOHTTP"
 
-    def _start_log(self):
-        self.logger.info(
-            f"Webhook Server is running on http://{self.host}:{self.port}",
-        )
-        self.logger.info("Press CTRL + C to stop")
-
     def run(
         self,
         *bots_: VillaBot,
@@ -48,10 +42,9 @@ class AIOHTTPBackend(BaseBackend):
                 handler=http_handle,
             ),
         )
-        self._start_log()
         web.run_app(
             self.app,
             host=host or self.host,
             port=port or self.port,
-            print=None,  # type: ignore
+            print=self.logger.info,
         )
