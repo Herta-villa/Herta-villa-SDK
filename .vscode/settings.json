@@ -5,11 +5,13 @@
   "python.formatting.provider": "none",
   "cSpell.words": [
     "aiohttp",
+    "fastapi",
     "herta",
     "hertavilla",
     "pypi",
     "retcode",
     "sourcery",
-    "startswith"
+    "startswith",
+    "uvicorn"
   ]
 }
