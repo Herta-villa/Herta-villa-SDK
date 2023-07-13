@@ -17,5 +17,10 @@ from .message import (
     Quote as Quote,
     VillaRoomLink as VillaRoomLink,
 )
-from .server import run as run
+from .server import (
+    AIOHTTPBackend as AIOHTTPBackend,
+    get_backend as get_backend,
+    init_backend as init_backend,
+    run as run,
+)
 from .version import __version__ as __version__
