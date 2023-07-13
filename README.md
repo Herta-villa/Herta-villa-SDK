@@ -1,6 +1,6 @@
 # Herta-villa-SDK
 
-[![license](https://img.shields.io/github/license/MingxuanGame/Herta-villa-SDK)](https://github.com/MingxuanGame/Herta-villa-SDK/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/Herta-villa/Herta-villa-SDK)](https://github.com/Herta-villa/Herta-villa-SDK/blob/master/LICENSE)
 [![pypi](https://img.shields.io/pypi/v/herta-villa-sdk)](https://pypi.python.org/pypi/herta-villa-sdk)
 ![python version](https://img.shields.io/badge/Python-3.8+-green)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -102,7 +102,7 @@ run(bot)  # 运行 bot
 
 ## Bug 反馈及建议
 
-大别野 Bot 和 Herta SDK 均处于开发状态中，如遇到问题或有相关建议可通过 [Issue](https://github.com/MingxuanGame/Herta-villa-SDK/issues/new) 提出，感谢支持！
+大别野 Bot 和 Herta SDK 均处于开发状态中，如遇到问题或有相关建议可通过 [Issue](https://github.com/Herta-villa/Herta-villa-SDK/issues/new) 提出，感谢支持！
 
 ## 相关项目
 
