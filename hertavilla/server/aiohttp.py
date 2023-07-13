@@ -41,7 +41,7 @@ class AIOHTTPBackend(BaseBackend):
             functools.partial(
                 self.app.router.add_post,
                 handler=http_handle,
-            ),  # type: ignore
+            ),
         )
         self._start_log()
         web.run_app(self.app, host=host, port=port, print=None)  # type: ignore

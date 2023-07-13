@@ -10,6 +10,7 @@
     "pypi",
     "retcode",
     "sourcery",
-    "startswith"
+    "startswith",
+    "uvicorn"
   ]
 }

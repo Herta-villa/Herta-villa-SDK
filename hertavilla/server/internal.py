@@ -44,7 +44,7 @@ class BaseBackend(abc.ABC):
     def _register_bots(
         self,
         bots: Sequence[VillaBot],
-        add_router_callback: Callable[[str], None],
+        add_router_callback: Callable[[str], Any],
     ) -> None:
         for bot in bots:
             self.bots[bot.bot_id] = bot

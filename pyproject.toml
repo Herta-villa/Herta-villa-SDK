@@ -21,6 +21,11 @@ Documentation = "https://github.com/Herta-villa/Herta-villa-SDK"
 Repository = "https://github.com/Herta-villa/Herta-villa-SDK"
 "Bug Tracker" = "https://github.com/Herta-villa/Herta-villa-SDK/issues"
 
+[project.optional-dependencies]
+fastapi = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.22.0",
+]
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
