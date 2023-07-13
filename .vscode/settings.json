@@ -5,6 +5,7 @@
   "python.formatting.provider": "none",
   "cSpell.words": [
     "aiohttp",
+    "fastapi",
     "herta",
     "hertavilla",
     "pypi",

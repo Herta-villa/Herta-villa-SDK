@@ -9,7 +9,7 @@
 
 ## 特性
 
-- `aiohttp` 客户端+服务端，完整异步支持
+- 多种服务器后端（内置 `aiohttp` 和 `fastapi` 后端），完整异步支持
 - 完整类型注解支持
 - ...
 
@@ -17,6 +17,12 @@
 
 ```shell
 pip install herta-villa-sdk
+```
+
+FastAPI 后端支持:
+
+```shell
+pip install herta-villa-sdk[fastapi]
 ```
 
 ## 快速开始
