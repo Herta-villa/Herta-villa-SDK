@@ -28,7 +28,12 @@ class AIOHTTPBackend(BaseBackend):
         )
         self.logger.info("Press CTRL + C to stop")
 
-    def run(self, *bots_: VillaBot, host: str = "0.0.0.0", port: int = 8080):
+    def run(
+        self,
+        *bots_: VillaBot,
+        host: str | None = None,
+        port: int | None = None,
+    ):
         async def http_handle(request: web.Request):
             resp = await self._run_handles(await request.json())
             return web.json_response(
@@ -44,4 +49,9 @@ class AIOHTTPBackend(BaseBackend):
             ),
         )
         self._start_log()
-        web.run_app(self.app, host=host, port=port, print=None)  # type: ignore
+        web.run_app(
+            self.app,
+            host=host or self.host,
+            port=port or self.port,
+            print=None,  # type: ignore
+        )

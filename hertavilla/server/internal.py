@@ -38,7 +38,12 @@ class BaseBackend(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def run(self, *bots_: VillaBot, host: str = "0.0.0.0", port: int = 8080):
+    def run(
+        self,
+        *bots_: VillaBot,
+        host: str | None = None,
+        port: int | None = None,
+    ):
         ...
 
     def _register_bots(

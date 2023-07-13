@@ -29,7 +29,12 @@ class FastAPIBackend(BaseBackend):
     def name(self) -> str:
         return "FastAPI"
 
-    def run(self, *bots_: VillaBot, host: str = "0.0.0.0", port: int = 8080):
+    def run(
+        self,
+        *bots_: VillaBot,
+        host: str | None = None,
+        port: int | None = None,
+    ):
         async def http_handle(request: Request) -> JSONResponse:
             resp = await self._run_handles(await request.json())
             return JSONResponse(
@@ -45,4 +50,9 @@ class FastAPIBackend(BaseBackend):
                 methods=["POST"],
             ),
         )
-        uvicorn.run(self.app, host=host, port=port, log_config=None)
+        uvicorn.run(
+            self.app,
+            host=host or self.host,
+            port=port or self.port,
+            log_config=None,
+        )
