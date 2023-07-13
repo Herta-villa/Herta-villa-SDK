@@ -7,6 +7,7 @@ from hertavilla.server.aiohttp import AIOHTTPBackend
 from hertavilla.server.internal import BaseBackend
 
 DEFAULT_BACKEND = AIOHTTPBackend
+_backend: BaseBackend | None = None
 
 
 def run(
@@ -16,5 +17,22 @@ def run(
     backend_class: type[BaseBackend] = DEFAULT_BACKEND,
     **kwargs: Any,
 ):
-    backend = backend_class(host, port, **kwargs)
-    backend.run(*bots_)
+    global _backend  # noqa: PLW0603
+    if _backend is None:
+        _backend = backend_class(host, port, **kwargs)
+    _backend.run(*bots_)
+
+
+def init_backend(backend: BaseBackend) -> None:
+    global _backend  # noqa: PLW0603
+    if _backend is not None:
+        raise RuntimeError(  # noqa: TRY003
+            "Backend has already been initialized",
+        )
+    _backend = backend
+
+
+def get_backend() -> BaseBackend:
+    if _backend is None:
+        raise RuntimeError("Backend isn't initialized")  # noqa: TRY003
+    return _backend
