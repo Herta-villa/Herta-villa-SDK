@@ -29,7 +29,10 @@ class AIOHTTPBackend(BaseBackend):
         port: int | None = None,
     ):
         async def http_handle(request: web.Request):
-            resp = await self._run_handles(await request.json())
+            resp = await self._run_handles(
+                request.headers.get("x-rpc-bot_sign"),
+                await request.text(),
+            )
             return web.json_response(
                 {"retcode": resp.retcode, "message": resp.message},
                 status=resp.status_code,

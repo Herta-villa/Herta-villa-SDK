@@ -10,12 +10,12 @@ import rsa
 
 def verify(
     bot: VillaBot,
-    pub_key: str | rsa.PublicKey,
     sign: str,
     body: str,
 ) -> bool:
     sign_ = base64.b64decode(sign)
     sign_msg = urllib.parse.urlencode({"body": body, "secret": bot.secret})
+    pub_key = bot.rsa_pub_key
     if isinstance(pub_key, str):
         pub_key = rsa.PublicKey.load_pkcs1_openssl_pem(pub_key.encode())
     try:

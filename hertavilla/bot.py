@@ -21,7 +21,10 @@ from hertavilla.apis.message import MessageAPIMixin
 from hertavilla.apis.role import RoleAPIMixin
 from hertavilla.apis.room import RoomAPIMixin
 from hertavilla.apis.villa import VillaAPIMixin
+from hertavilla.encrypt import verify
 from hertavilla.match import Endswith, Keywords, Match, Regex, Startswith
+
+from rsa import PublicKey
 
 if TYPE_CHECKING:
     from hertavilla.event import Command, Event, SendMessageEvent, Template
@@ -75,12 +78,14 @@ class VillaBot(
         bot_id: str,
         secret: str,
         callback_endpoint: str,
+        rsa_pub_key: str | PublicKey,
         pub_key: str | None = None,
         bot_info: "Template" | None = None,
     ) -> None:
         from hertavilla.event import SendMessageEvent
 
         super().__init__(bot_id, secret, pub_key)
+        self.rsa_pub_key = rsa_pub_key
         self._bot_info = bot_info
         self.callback_endpoint = callback_endpoint
         self.handlers: list[Handler] = []
@@ -130,6 +135,13 @@ class VillaBot(
 
     def __hash__(self) -> int:
         return hash(self.bot_id)
+
+    def verify(
+        self,
+        sign: str,
+        body: str,
+    ) -> bool:
+        return verify(self, sign, body)
 
     async def send(
         self,

@@ -36,7 +36,10 @@ class FastAPIBackend(BaseBackend):
         port: int | None = None,
     ):
         async def http_handle(request: Request) -> JSONResponse:
-            resp = await self._run_handles(await request.json())
+            resp = await self._run_handles(
+                request.headers.get("x-rpc-bot_sign"),
+                (await request.body()).decode(),
+            )
             return JSONResponse(
                 {"retcode": resp.retcode, "message": resp.message},
                 status_code=resp.status_code,
