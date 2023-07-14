@@ -3,7 +3,23 @@ from __future__ import annotations
 from typing import Any
 
 
-class _ExceptionWithRetcode(Exception):
+class SDKException(Exception):
+    ...
+
+
+class HTTPStatusError(SDKException):
+    def __init__(
+        self,
+        /,
+        status: int,
+    ) -> None:
+        self.status = status
+
+    def __repr__(self) -> str:
+        return "<HTTPStatusError status={self.status}"
+
+
+class _ExceptionWithRetcode(SDKException):
     def __init__(self, /, retcode: int, message: str) -> None:
         self.retcode = retcode
         self.message = message
