@@ -72,7 +72,7 @@ select = [
   "B",        # flake8-bugbear
   "ASYNC",    # flake8-async
 ]
-
+ignore = ["PLR0913"]
 allowed-confusables = ["，", "。", "（", "）", "；"]
 
 [tool.ruff.isort]
