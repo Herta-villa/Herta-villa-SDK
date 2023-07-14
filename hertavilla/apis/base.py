@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Literal
 
-from hertavilla.exception import raise_exception
+from hertavilla.exception import HTTPStatusError, raise_exception
 
 from aiohttp import ClientSession
 
@@ -42,6 +42,8 @@ class _BaseAPIMixin:
                 params=params,
                 headers=self._make_header(villa_id) if villa_id else None,
             ) as resp:
+                if not resp.ok:
+                    raise HTTPStatusError(resp.status)
                 payload = await resp.json()
                 raise_exception(payload)
                 return payload["data"]
