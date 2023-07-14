@@ -75,12 +75,12 @@ class VillaBot(
         bot_id: str,
         secret: str,
         callback_endpoint: str,
+        pub_key: str | None = None,
         bot_info: "Template" | None = None,
     ) -> None:
         from hertavilla.event import SendMessageEvent
 
-        self.bot_id = bot_id
-        self.secret = secret
+        super().__init__(bot_id, secret, pub_key)
         self._bot_info = bot_info
         self.callback_endpoint = callback_endpoint
         self.handlers: list[Handler] = []
