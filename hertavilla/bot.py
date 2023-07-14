@@ -26,7 +26,6 @@ from hertavilla.apis.villa import VillaAPIMixin
 from hertavilla.match import Endswith, Keywords, Match, Regex, Startswith
 
 import rsa
-from rsa import PublicKey
 
 if TYPE_CHECKING:
     from hertavilla.event import Command, Event, SendMessageEvent, Template
@@ -80,7 +79,7 @@ class VillaBot(
         bot_id: str,
         secret: str,
         callback_endpoint: str,
-        rsa_pub_key: str | PublicKey,
+        rsa_pub_key: str | rsa.PublicKey,
         pub_key: str | None = None,
         bot_info: "Template" | None = None,
     ) -> None:
