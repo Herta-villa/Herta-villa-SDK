@@ -15,6 +15,7 @@ from typing import (
 )
 
 from hertavilla.apis.auth import AuthAPIMixin
+from hertavilla.apis.img import ImgAPIMixin
 from hertavilla.apis.member import MemberAPIMixin
 from hertavilla.apis.message import MessageAPIMixin
 from hertavilla.apis.role import RoleAPIMixin
@@ -67,6 +68,7 @@ class VillaBot(
     RoomAPIMixin,
     VillaAPIMixin,
     RoleAPIMixin,
+    ImgAPIMixin,
 ):
     def __init__(
         self,
