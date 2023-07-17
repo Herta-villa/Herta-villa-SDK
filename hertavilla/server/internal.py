@@ -3,6 +3,7 @@ from __future__ import annotations
 import abc
 import asyncio
 from dataclasses import dataclass
+import json
 import logging
 from typing import Any, Callable, Sequence
 
@@ -17,6 +18,11 @@ class ResponseData:
     status_code: int = 200
     retcode: int = 0
     message: str = ""
+
+
+INVALID_EVENT = ResponseData(400, -1, "event body is invalid")
+VERIFY_FAILED = ResponseData(401, -2, "verify failed")
+NO_BOT = ResponseData(404, 1, "no bot with this id")
 
 
 class BaseBackend(abc.ABC):
@@ -59,20 +65,26 @@ class BaseBackend(abc.ABC):
                 f"Register endpoint {endpoint} for bot {bot.bot_id}",
             )
 
-    async def _run_handles(self, payload: dict[str, Any]) -> ResponseData:
+    async def _run_handles(
+        self,
+        sign: str | None,
+        body: str,
+    ) -> ResponseData:
+        payload = json.loads(body)
         if not (event_payload := payload.get("event")):
-            # 当数据不符合结构时返回 400 Bad Request
-            # retcode: -1
-            # message: event body is invalid
             self.logger.warning("Event is invalid")
-            return ResponseData(400, -1, "event body is invalid")
+            return INVALID_EVENT
         try:
             event = parse_event(event_payload)
         except ValueError:
             self.logger.warning("Event is invalid")
-            return ResponseData(400, -1, "event body is invalid")
+            return INVALID_EVENT
 
         if bot := self.bots.get(event.robot.template.id):
+            if sign is None or not bot.verify(sign, body):
+                logging.warn("Event verify check is failed. Reject handling.")
+                return VERIFY_FAILED
+
             self.logger.info(
                 (
                     f"[RECV] {event.__class__.__name__} "
@@ -90,4 +102,4 @@ class BaseBackend(abc.ABC):
         self.logger.warning(
             f"Received event but no bot with id {event.robot.template.id}",
         )
-        return ResponseData(404, 1, "no bot with this id")
+        return NO_BOT

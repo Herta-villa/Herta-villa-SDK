@@ -4,11 +4,9 @@ import hashlib
 import hmac
 import logging
 from typing import Any, Literal
-import warnings
 
 from hertavilla.exception import (
     HTTPStatusError,
-    PubkeyNoneWarning,
     raise_exception,
 )
 
@@ -23,28 +21,18 @@ class _BaseAPIMixin:
         self,
         bot_id: str,
         secret: str,
-        pub_key: str | None = None,
+        pub_key: str,
     ):
         self.bot_id = bot_id
         self.secret = secret
         self.pub_key = pub_key
-        if pub_key is None:
-            warnings.warn(
-                "Pubkey is None. You're using unencrypted secret. "
-                "Unencrypted secret will be deprecated after August 8, 2023",
-                stacklevel=3,
-                category=PubkeyNoneWarning,
-            )
 
     def _make_header(self, villa_id: int) -> dict[str, str]:
-        if self.pub_key is not None:
-            secret = hmac.new(
-                self.pub_key.encode(),
-                self.secret.encode(),
-                hashlib.sha256,
-            ).hexdigest()
-        else:
-            secret = self.secret
+        secret = hmac.new(
+            self.pub_key.encode(),
+            self.secret.encode(),
+            hashlib.sha256,
+        ).hexdigest()
         return {
             "x-rpc-bot_id": self.bot_id,
             "x-rpc-bot_secret": secret,

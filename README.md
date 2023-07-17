@@ -32,10 +32,22 @@ pip install herta-villa-sdk[fastapi]
 ```python
 from hertavilla import MessageChain, SendMessageEvent, VillaBot, run
 
+
+PUB_KEY = """-----BEGIN PUBLIC KEY-----
+aaa
+bbb
+ccc
+-----END PUBLIC KEY-----
+"""  # 开放平台 pub_key
+# 需要注意 `-----BEGIN PUBLIC KEY-----` 前没有换行符
+#  `-----END PUBLIC KEY-----` 后有一个换行符
+# 目前从网页端复制下来的时候会为一串 pub_key，需要将空格转为换行
+
 bot = VillaBot(
     "bot_id",  # 这里填写 bot_id
     "bot_secret",  # 这里填写 secret
     "/",  # bot 回调 endpoint
+    PUB_KEY,  # 开放平台提供的 pub_key
 )
 
 
