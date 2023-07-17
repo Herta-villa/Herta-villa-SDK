@@ -31,7 +31,7 @@ class AIOHTTPBackend(BaseBackend):
         async def http_handle(request: web.Request):
             resp = await self._run_handles(
                 request.headers.get("x-rpc-bot_sign"),
-                await request.text(),
+                (await request.text()).strip(),
             )
             return web.json_response(
                 {"retcode": resp.retcode, "message": resp.message},
