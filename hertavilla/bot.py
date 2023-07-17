@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 from dataclasses import dataclass
 import logging
 import re
@@ -13,6 +14,7 @@ from typing import (
     NamedTuple,
     TypeVar,
 )
+import urllib.parse
 
 from hertavilla.apis.auth import AuthAPIMixin
 from hertavilla.apis.img import ImgAPIMixin
@@ -22,6 +24,8 @@ from hertavilla.apis.role import RoleAPIMixin
 from hertavilla.apis.room import RoomAPIMixin
 from hertavilla.apis.villa import VillaAPIMixin
 from hertavilla.match import Endswith, Keywords, Match, Regex, Startswith
+
+import rsa
 
 if TYPE_CHECKING:
     from hertavilla.event import Command, Event, SendMessageEvent, Template
@@ -75,12 +79,15 @@ class VillaBot(
         bot_id: str,
         secret: str,
         callback_endpoint: str,
+        pub_key: str,
         bot_info: "Template" | None = None,
     ) -> None:
         from hertavilla.event import SendMessageEvent
 
-        self.bot_id = bot_id
-        self.secret = secret
+        super().__init__(bot_id, secret, pub_key)
+        self.rsa_pub_key = rsa.PublicKey.load_pkcs1_openssl_pem(
+            pub_key.encode(),
+        )
         self._bot_info = bot_info
         self.callback_endpoint = callback_endpoint
         self.handlers: list[Handler] = []
@@ -130,6 +137,22 @@ class VillaBot(
 
     def __hash__(self) -> int:
         return hash(self.bot_id)
+
+    def verify(
+        self,
+        sign: str,
+        body: str,
+    ) -> bool:
+        sign_ = base64.b64decode(sign)
+        sign_msg = urllib.parse.urlencode(
+            {"body": body, "secret": self.secret},
+        ).encode()
+        try:
+            rsa.verify(sign_msg, sign_, self.rsa_pub_key)
+        except rsa.VerificationError:
+            return False
+        else:
+            return True
 
     async def send(
         self,

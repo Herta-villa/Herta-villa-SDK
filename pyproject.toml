@@ -8,6 +8,7 @@ authors = [
 dependencies = [
     "aiohttp>=3.8.4",
     "pydantic>=1.10.8,<2.0",
+    "rsa>=4.9",
 ]
 requires-python = ">=3.8"
 readme = "README.md"
@@ -72,7 +73,7 @@ select = [
   "B",        # flake8-bugbear
   "ASYNC",    # flake8-async
 ]
-
+ignore = ["PLR0913"]
 allowed-confusables = ["，", "。", "（", "）", "；"]
 
 [tool.ruff.isort]
