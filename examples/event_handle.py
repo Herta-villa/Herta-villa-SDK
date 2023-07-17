@@ -7,6 +7,7 @@ bot = VillaBot(
     "bot_id",
     "bot_secret",
     "/",
+    "pub_key",
 )
 
 
