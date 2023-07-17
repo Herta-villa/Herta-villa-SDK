@@ -79,14 +79,15 @@ class VillaBot(
         bot_id: str,
         secret: str,
         callback_endpoint: str,
-        rsa_pub_key: str | rsa.PublicKey,
-        pub_key: str | None = None,
+        pub_key: str,
         bot_info: "Template" | None = None,
     ) -> None:
         from hertavilla.event import SendMessageEvent
 
         super().__init__(bot_id, secret, pub_key)
-        self.rsa_pub_key = rsa_pub_key
+        self.rsa_pub_key = rsa.PublicKey.load_pkcs1_openssl_pem(
+            pub_key.encode(),
+        )
         self._bot_info = bot_info
         self.callback_endpoint = callback_endpoint
         self.handlers: list[Handler] = []
@@ -145,12 +146,9 @@ class VillaBot(
         sign_ = base64.b64decode(sign)
         sign_msg = urllib.parse.urlencode(
             {"body": body, "secret": self.secret},
-        )
-        pub_key = self.rsa_pub_key
-        if isinstance(pub_key, str):
-            pub_key = rsa.PublicKey.load_pkcs1_openssl_pem(pub_key.encode())
+        ).encode()
         try:
-            rsa.verify(sign_msg.encode(), sign_, pub_key)
+            rsa.verify(sign_msg, sign_, self.rsa_pub_key)
         except rsa.VerificationError:
             return False
         else:
