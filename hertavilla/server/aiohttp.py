@@ -6,6 +6,8 @@ from typing import Any
 from hertavilla.bot import VillaBot
 from hertavilla.server.internal import BaseBackend
 
+from ._lifespan import L_FUNC, LifespanManager
+
 from aiohttp import web
 
 
@@ -13,6 +15,7 @@ class AIOHTTPBackend(BaseBackend):
     def __init__(self, host: str = "0.0.0.0", port: int = 8080, **kwargs: Any):
         super().__init__(host, port, **kwargs)
         self._app = web.Application()
+        self._lifespan_manager = LifespanManager()
 
     @property
     def app(self) -> web.Application:
@@ -21,6 +24,12 @@ class AIOHTTPBackend(BaseBackend):
     @property
     def name(self) -> str:
         return "AIOHTTP"
+
+    async def _run_startup(self, _: web.Application):
+        await self._lifespan_manager.startup()
+
+    async def _run_shutdown(self, _: web.Application):
+        await self._lifespan_manager.shutdown()
 
     def run(
         self,
@@ -45,9 +54,17 @@ class AIOHTTPBackend(BaseBackend):
                 handler=http_handle,
             ),
         )
+        self.app.on_startup.append(self._run_startup)
+        self.app.on_cleanup.append(self._run_shutdown)
         web.run_app(
             self.app,
             host=host or self.host,
             port=port or self.port,
             print=self.logger.info,
         )
+
+    def on_startup(self, func: L_FUNC):
+        self._lifespan_manager.on_startup(func)
+
+    def on_shutdown(self, func: L_FUNC):
+        self._lifespan_manager.on_shutdown(func)
