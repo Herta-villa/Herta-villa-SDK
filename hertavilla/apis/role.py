@@ -64,7 +64,7 @@ class RoleAPIMixin(_BaseAPIMixin):
             )["id"],
         )
 
-    async def edit_member_role(  # noqa: PLR0913
+    async def edit_member_role(
         self,
         villa_id: int,
         id_: int,
