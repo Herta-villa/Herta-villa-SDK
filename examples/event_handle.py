@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from hertavilla import Event, SendMessageEvent, VillaBot, run
 from hertavilla.match import Regex
+from hertavilla.server import init_backend
 
 bot = VillaBot(
     "bot_id",
@@ -37,4 +38,5 @@ async def _(event: SendMessageEvent, bot: VillaBot):
     ...
 
 
+init_backend()
 run(bot)
