@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+from copy import deepcopy
 import logging
-from typing import TYPE_CHECKING, List
+import sys
+from typing import TYPE_CHECKING, Iterable, List
 
 from hertavilla.message.image import (
     Image,
@@ -15,14 +17,59 @@ from hertavilla.message.types import MsgContentInfo, _Segment
 if TYPE_CHECKING:
     from hertavilla.bot import VillaBot
 
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+
 logger = logging.getLogger("hertavilla.message")
 
 
 class MessageChain(List[_Segment]):
-    def append(self, __object: _Segment | str) -> None:
+    def __init__(
+        self,
+        message: str | _Segment | Iterable[_Segment] | None = None,
+    ) -> None:
+        super().__init__()
+        if message is None:
+            return
+        if isinstance(message, (_Segment, str)):
+            self.append(message)
+        else:
+            self.extend(message)
+
+    def append(self, __object: str | _Segment) -> None:
         if isinstance(__object, str):
             __object = Text(__object)
         super().append(__object)
+
+    def copy(self) -> Self:
+        return deepcopy(self)
+
+    def __add__(self, other: str | _Segment | Iterable[_Segment]) -> Self:
+        result = self.copy()
+        result += other
+        return result
+
+    def __radd__(self, other: str | _Segment | Iterable[_Segment]) -> Self:
+        result = self.__class__(other)
+        return result + self
+
+    def __iadd__(self, other: str | _Segment | Iterable[_Segment]) -> Self:
+        if isinstance(other, str):
+            self.append(Text(other))
+        elif isinstance(other, _Segment):
+            self.append(other)
+        elif isinstance(other, Iterable):
+            self.extend(other)
+        else:
+            raise TypeError(f"Unsupported type {type(other)!r}")
+        return self
+
+    def extend(self, obj: Iterable[_Segment]) -> Self:
+        for segment in obj:
+            self.append(segment)
+        return self
 
     async def to_content_json(
         self,
@@ -68,7 +115,7 @@ class MessageChain(List[_Segment]):
                         "so use the last one",
                     )
                 return posts[-1], "MHY:Post"
-            raise ValueError("Message is empty")  # noqa: TRY003
+            raise ValueError("Message is empty")
         if image:
             logger.warn(
                 "When the image and text exist at the same time, "
