@@ -31,6 +31,7 @@ pip install herta-villa-sdk[fastapi]
 
 ```python
 from hertavilla import MessageChain, SendMessageEvent, VillaBot, run
+from hertavilla.server import init_backend
 
 
 PUB_KEY = """-----BEGIN PUBLIC KEY-----
@@ -60,6 +61,7 @@ async def _(event: SendMessageEvent, bot: VillaBot):
         await bot.send(event.villa_id, event.room_id, chain)
 
 
+init_backend()  # 初始化后端
 run(bot)  # 运行 bot
 ```
 

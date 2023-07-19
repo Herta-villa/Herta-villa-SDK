@@ -14,6 +14,7 @@ from hertavilla import (
     run,
 )
 from hertavilla.message.text import Text
+from hertavilla.server import init_backend
 
 bot = VillaBot(
     "bot_id",
@@ -71,4 +72,5 @@ async def _(event: SendMessageEvent, bot: VillaBot):
     #   如果存在多张图片，则将使用 MHY:Text 发送，Web 端无法查看（不受支持）
 
 
+init_backend()
 run(bot)
