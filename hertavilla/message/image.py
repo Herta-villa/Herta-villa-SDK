@@ -33,7 +33,7 @@ class Image(_Segment):
         elif width and height:
             self.size = {"width": width, "height": height}
         else:
-            raise ValueError(  # noqa: TRY003
+            raise ValueError(
                 "Parameter width and height are not both None or int",
             )
         self.url = url

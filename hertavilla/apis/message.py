@@ -43,7 +43,7 @@ class MessageAPIMixin(_BaseAPIMixin):
             )
         )["bot_msg_id"]
 
-    async def pin_message(  # noqa: PLR0913
+    async def pin_message(
         self,
         villa_id: int,
         msg_uid: str,
