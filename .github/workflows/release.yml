@@ -18,7 +18,7 @@ jobs:
 
       - run: |
           echo "TAG=v${{ github.event.pull_request.title }}" >> $GITHUB_ENV
-          echo "VERSION=v${{ github.event.pull_request.title }}" >> $GITHUB_ENV
+          echo "VERSION=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
 
       - name: Bump version
         run: |
