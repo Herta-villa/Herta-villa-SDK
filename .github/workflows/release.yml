@@ -20,13 +20,6 @@ jobs:
           echo "TAG=v${{ github.event.pull_request.title }}" >> $GITHUB_ENV
           echo "VERSION=v${{ github.event.pull_request.title }}" >> $GITHUB_ENV
 
-      - name: Generate release changelog
-        uses: mikepenz/release-changelog-builder-action@v4.0.0-rc03
-        id: changelog
-        with:
-          configuration: .github/release_configuration.json
-          outputFile: CHANGELOG.md
-
       - name: Bump version
         run: |
           sed -i "3c\__version__ = \"${{ env.VERSION }}\"" hertavilla/version.py
@@ -39,6 +32,12 @@ jobs:
           git commit -m ":bookmark: Release ${{ env.VERSION }}"
           git tag ${{ env.TAG }}
           git push && git push --tags
+
+      - name: Generate release changelog
+        uses: mikepenz/release-changelog-builder-action@v4.0.0-rc03
+        id: changelog
+        with:
+          configuration: .github/release_configuration.json
 
       - name: Setup PDM
         uses: pdm-project/setup-pdm@v3
@@ -54,4 +53,4 @@ jobs:
       - name: Build and Publish package
         run: |
           pdm publish
-          gh release create ${{ env.TAG }} -F CHANGELOG.md -t ${{ env.TAG }} dist/*.tar.gz dist/*.whl
+          gh release create ${{ env.TAG }} -n ${{steps.changelog.outputs.changelog}} -t ${{ env.TAG }} dist/*.tar.gz dist/*.whl
