@@ -10,6 +10,8 @@ from typing import Any, Callable, Sequence
 from hertavilla.bot import VillaBot
 from hertavilla.event import parse_event
 
+from ._lifespan import L_FUNC
+
 background_tasks = set()
 
 
@@ -50,7 +52,15 @@ class BaseBackend(abc.ABC):
         host: str | None = None,
         port: int | None = None,
     ):
-        ...
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def on_startup(self, func: L_FUNC):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def on_shutdown(self, func: L_FUNC):
+        raise NotImplementedError
 
     def _register_bots(
         self,

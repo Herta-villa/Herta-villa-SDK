@@ -1,0 +1,25 @@
+{
+  "categories": [
+    {
+      "title": "## 💥 破坏性更新",
+      "labels": ["💥breaking"]
+    },
+    {
+      "title": "## 🚀 新特性",
+      "labels": ["✨feature"]
+    },
+    {
+      "title": "## 🐛 Bug 修复",
+      "labels": ["🐛bug"]
+    }
+  ],
+  "sort": {
+    "order":"ASC",
+    "on_property":"mergedAt"
+  },
+  "template": "${{CHANGELOG}}",
+  "pr_template": "- ${{TITLE}} (${{URL}}, by ${{AUTHOR}})",
+  "empty_template": "- no changes",
+  "max_pull_requests": 1000,
+  "max_back_track_time_days": 1000
+}
