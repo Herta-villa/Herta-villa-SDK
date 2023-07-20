@@ -46,6 +46,7 @@ logger = logging.getLogger("hertavilla.bot")
 class Handler(Generic[TE]):
     event: type[TE]
     func: Callable[[TE, VillaBot], Coroutine[Any, Any, None]]
+    temp: bool = False
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         return self.func(*args, **kwargs)
@@ -57,6 +58,7 @@ class Handler(Generic[TE]):
 class MessageHandler(NamedTuple):
     match: Match
     func: Callable[["SendMessageEvent", VillaBot], Coroutine[Any, Any, None]]
+    temp: bool = False
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         return self.func(*args, **kwargs)
@@ -182,14 +184,19 @@ class VillaBot(
         self,
         event: type[TE],
         func: Callable[[TE, VillaBot], Coroutine[Any, Any, None]],
+        temp: bool = False,
     ):
-        self.handlers.append(Handler[TE](event, func))
-        logger.info(f"Registered the handler {func} for {event.__name__}")
+        self.handlers.append(Handler[TE](event, func, temp))
+        logger.info(
+            f"Registered the handler {func} "
+            f"for {event.__name__} (temp: {temp})",
+        )
         return func
 
     def listen(
         self,
         event: type[TE],
+        temp: bool = False,
     ) -> Callable[
         [Callable[[TE, VillaBot], Coroutine[Any, Any, None]]],
         Callable[[TE, VillaBot], Coroutine[Any, Any, None]],
@@ -197,43 +204,61 @@ class VillaBot(
         def wrapper(
             func: Callable[[TE, VillaBot], Coroutine[Any, Any, None]],
         ) -> Callable[[TE, VillaBot], Coroutine[Any, Any, None]]:
-            self.register_handler(event, func)
+            self.register_handler(event, func, temp)
             return func
 
         return wrapper
 
     async def handle_event(self, event: Event) -> None:
-        handlers = filter(lambda x: x == event, self.handlers)
+        handlers = list(filter(lambda x: x == event, self.handlers))
         logger.info(f"Handling event {event.__class__.__name__}")
+        need_remove_handlers = filter(lambda x: x.temp, handlers)
         try:
             await asyncio.gather(
                 *[handler(event, self) for handler in handlers],
             )
         except Exception:
             logger.exception("Raised exceptions while handling event.")
+        for handler in need_remove_handlers:
+            self.handlers.remove(handler)
+            logger.debug(f"Removed handler for {event.__class__.__name__}")
 
     # message handle
     @staticmethod
     async def message_handler(event: "SendMessageEvent", bot: "VillaBot"):
-        handlers = filter(
-            lambda x: x.check(event.message),
-            bot.message_handlers,
+        handlers = list(
+            filter(
+                lambda x: x.check(event.message),
+                bot.message_handlers,
+            ),
         )
+        need_remove_handlers = filter(lambda x: x.temp, handlers)
         await asyncio.gather(*[handler(event, bot) for handler in handlers])
+        for handler in need_remove_handlers:
+            bot.message_handlers.remove(handler)
+            logger.debug(f"Removed message handler with {handler.match}")
 
-    def register_msg_handler(self, match: Match, func: MessageHandlerFunc):
-        self.message_handlers.append(MessageHandler(match, func))
-        logger.info(f"Registered the handler {func} with {match}")
+    def register_msg_handler(
+        self,
+        match: Match,
+        func: MessageHandlerFunc,
+        temp: bool = False,
+    ):
+        self.message_handlers.append(MessageHandler(match, func, temp))
+        logger.info(
+            f"Registered the handler {func} with {match} (temp: {temp})",
+        )
         return func
 
     def match(
         self,
         match: Match,
+        temp: bool = False,
     ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
         def wrapper(
             func: MessageHandlerFunc,
         ) -> MessageHandlerFunc:
-            self.register_msg_handler(match, func)
+            self.register_msg_handler(match, func, temp)
             return func
 
         return wrapper
@@ -241,11 +266,12 @@ class VillaBot(
     def regex(
         self,
         pattern: str | re.Pattern,
+        temp: bool = False,
     ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
         def wrapper(
             func: MessageHandlerFunc,
         ) -> MessageHandlerFunc:
-            self.register_msg_handler(Regex(pattern), func)
+            self.register_msg_handler(Regex(pattern), func, temp)
             return func
 
         return wrapper
@@ -253,11 +279,12 @@ class VillaBot(
     def startswith(
         self,
         prefix: str,
+        temp: bool = False,
     ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
         def wrapper(
             func: MessageHandlerFunc,
         ) -> MessageHandlerFunc:
-            self.register_msg_handler(Startswith(prefix), func)
+            self.register_msg_handler(Startswith(prefix), func, temp)
             return func
 
         return wrapper
@@ -265,11 +292,12 @@ class VillaBot(
     def endswith(
         self,
         suffix: str,
+        temp: bool = False,
     ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
         def wrapper(
             func: MessageHandlerFunc,
         ) -> MessageHandlerFunc:
-            self.register_msg_handler(Endswith(suffix), func)
+            self.register_msg_handler(Endswith(suffix), func, temp)
             return func
 
         return wrapper
@@ -277,11 +305,12 @@ class VillaBot(
     def keyword(
         self,
         *keywords: str,
+        temp: bool = False,
     ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
         def wrapper(
             func: MessageHandlerFunc,
         ) -> MessageHandlerFunc:
-            self.register_msg_handler(Keywords(*keywords), func)
+            self.register_msg_handler(Keywords(*keywords), func, temp)
             return func
 
         return wrapper

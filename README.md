@@ -103,7 +103,9 @@ run(bot)  # 运行 bot
   - [x] 获取大别野下所有身份组 `/getVillaMemberRoles`
 - [x] 表态表情
   - [x] 获取全量表情 `/getAllEmoticons`
-- [ ] 审核 `/audit`
+- [x] 图片
+  - [x] 图片转存 `/transferImage`
+- [x] 审核 `/audit`
 
 ## 支持的事件
 
@@ -112,7 +114,7 @@ run(bot)  # 运行 bot
 - [x] [CreateRobot](https://webstatic.mihoyo.com/vila/bot/doc/callback.html###CreateRobot) 大别野添加机器人实例
 - [x] [DeleteRobot](https://webstatic.mihoyo.com/vila/bot/doc/callback.html###DeleteRobot) 大别野删除机器人实例
 - [x] [AddQuickEmoticon](https://webstatic.mihoyo.com/vila/bot/doc/callback.html#AddQuickEmoticon) 用户使用表情回复消息表态
-- [ ] [AuditCallback](https://webstatic.mihoyo.com/vila/bot/doc/callback.html#AuditCallback) 审核结果回调
+- [x] [AuditCallback](https://webstatic.mihoyo.com/vila/bot/doc/callback.html#AuditCallback) 审核结果回调
 
 ## Bug 反馈及建议
 
