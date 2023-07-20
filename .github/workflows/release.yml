@@ -38,6 +38,9 @@ jobs:
         id: changelog
         with:
           configuration: .github/release_configuration.json
+          outputFile: CHANGELOG.md
+
+      - run: cat CHANGELOG.md
 
       - name: Setup PDM
         uses: pdm-project/setup-pdm@v3
@@ -53,4 +56,4 @@ jobs:
       - name: Build and Publish package
         run: |
           pdm publish
-          gh release create ${{ env.TAG }} --notes ${{steps.changelog.outputs.changelog}} -t ${{ env.TAG }} dist/*.tar.gz dist/*.whl
+          gh release create ${{ env.TAG }} -F CHANGELOG.md -t ${{ env.TAG }} dist/*.tar.gz dist/*.whl
