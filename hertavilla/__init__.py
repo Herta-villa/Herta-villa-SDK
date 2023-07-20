@@ -2,6 +2,10 @@ from __future__ import annotations
 
 from .bot import VillaBot as VillaBot
 from .event import (
+    AddQuickEmoticonEvent as AddQuickEmoticonEvent,
+    AuditCallbackEvent as AuditCallbackEvent,
+    CreateRobotEvent as CreateRobotEvent,
+    DeleteRobotEvent as DeleteRobotEvent,
     Event as Event,
     JoinVillaEvent as JoinVillaEvent,
     SendMessageEvent as SendMessageEvent,
