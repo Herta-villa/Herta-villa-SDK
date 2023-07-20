@@ -10,6 +10,12 @@ from .event import (
     JoinVillaEvent as JoinVillaEvent,
     SendMessageEvent as SendMessageEvent,
 )
+from .match import (
+    EndswithResult as EndswithResult,
+    KeywordsResult as KeywordsResult,
+    RegexResult as RegexResult,
+    StartswithResult as StartswithResult,
+)
 from .message import (
     Image as Image,
     Link as Link,

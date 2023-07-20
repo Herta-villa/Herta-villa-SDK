@@ -30,7 +30,7 @@ pip install herta-villa-sdk[fastapi]
 你需要拥有一个[大别野](https://dby.miyoushe.com/chat)机器人。可前往大别野[「机器人开发者社区」](https://dby.miyoushe.com/chat/463/20020)（`OpenVilla`）申请。
 
 ```python
-from hertavilla import MessageChain, SendMessageEvent, VillaBot, run
+from hertavilla import MessageChain, SendMessageEvent, VillaBot, run, StartswithResult
 from hertavilla.server import init_backend
 
 
@@ -53,11 +53,9 @@ bot = VillaBot(
 
 
 @bot.startswith("/")  # 注册一个消息匹配器，匹配前缀为 / 的消息
-async def _(event: SendMessageEvent, bot: VillaBot):
-    message = event.message
-    if str(message[1]) == "/hello":
-        chain = MessageChain()
-        chain.append("world")
+async def _(event: SendMessageEvent, bot: VillaBot, match_result: StartswithResult):
+    if match_result.text == "hello":
+        chain = MessageChain("world")
         await bot.send(event.villa_id, event.room_id, chain)
 
 
