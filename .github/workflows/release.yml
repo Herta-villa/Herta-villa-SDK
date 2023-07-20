@@ -53,4 +53,4 @@ jobs:
       - name: Build and Publish package
         run: |
           pdm publish
-          gh release create ${{ env.TAG }} -n ${{steps.changelog.outputs.changelog}} -t ${{ env.TAG }} dist/*.tar.gz dist/*.whl
+          gh release create ${{ env.TAG }} --notes ${{steps.changelog.outputs.changelog}} -t ${{ env.TAG }} dist/*.tar.gz dist/*.whl
