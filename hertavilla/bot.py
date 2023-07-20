@@ -8,10 +8,10 @@ import re
 from typing import (
     TYPE_CHECKING,
     Any,
+    Awaitable,
     Callable,
     Coroutine,
     Generic,
-    NamedTuple,
     TypeVar,
 )
 import urllib.parse
@@ -23,7 +23,19 @@ from hertavilla.apis.message import MessageAPIMixin
 from hertavilla.apis.role import RoleAPIMixin
 from hertavilla.apis.room import RoomAPIMixin
 from hertavilla.apis.villa import VillaAPIMixin
-from hertavilla.match import Endswith, Keywords, Match, Regex, Startswith
+from hertavilla.match import (
+    Endswith,
+    EndswithResult,
+    Keywords,
+    KeywordsResult,
+    Match,
+    MatchResult,
+    Regex,
+    RegexResult,
+    Startswith,
+    StartswithResult,
+    current_match_result,
+)
 
 import rsa
 
@@ -33,11 +45,8 @@ if TYPE_CHECKING:
 
 
 TE = TypeVar("TE", bound="Event")
+TR = TypeVar("TR", bound="MatchResult")
 
-MessageHandlerFunc = Callable[
-    ["SendMessageEvent", "VillaBot"],
-    Coroutine[Any, Any, None],
-]
 
 logger = logging.getLogger("hertavilla.bot")
 
@@ -55,9 +64,10 @@ class Handler(Generic[TE]):
         return isinstance(__value, self.event)
 
 
-class MessageHandler(NamedTuple):
+@dataclass
+class MessageHandler(Generic[TR]):
     match: Match
-    func: Callable[["SendMessageEvent", VillaBot], Coroutine[Any, Any, None]]
+    func: Callable[["SendMessageEvent", "VillaBot", TR], Awaitable[Any]]
     temp: bool = False
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
@@ -65,6 +75,27 @@ class MessageHandler(NamedTuple):
 
     def check(self, chain: MessageChain) -> bool:
         return self.match.check(chain)
+
+
+RegexHandlerFunc = Callable[
+    ["SendMessageEvent", "VillaBot", RegexResult],
+    Awaitable[Any],
+]
+
+StartswithHandlerFunc = Callable[
+    ["SendMessageEvent", "VillaBot", StartswithResult],
+    Awaitable[Any],
+]
+
+EndswithHandlerFunc = Callable[
+    ["SendMessageEvent", "VillaBot", EndswithResult],
+    Awaitable[Any],
+]
+
+KeywordsHandlerFunc = Callable[
+    ["SendMessageEvent", "VillaBot", KeywordsResult],
+    Awaitable[Any],
+]
 
 
 class VillaBot(
@@ -226,25 +257,34 @@ class VillaBot(
     # message handle
     @staticmethod
     async def message_handler(event: "SendMessageEvent", bot: "VillaBot"):
-        handlers = list(
-            filter(
-                lambda x: x.check(event.message),
-                bot.message_handlers,
-            ),
+        await asyncio.gather(
+            *[
+                bot._run_message_handler(event, bot, handler)  # noqa: SLF001
+                for handler in bot.message_handlers
+            ],
         )
-        need_remove_handlers = filter(lambda x: x.temp, handlers)
-        await asyncio.gather(*[handler(event, bot) for handler in handlers])
-        for handler in need_remove_handlers:
+
+    @staticmethod
+    async def _run_message_handler(
+        event: "SendMessageEvent",
+        bot: "VillaBot",
+        handler: MessageHandler,
+    ):
+        if not handler.check(event.message):
+            return
+        result = current_match_result.get()
+        await handler(event, bot, result)
+        if handler.temp:
             bot.message_handlers.remove(handler)
             logger.debug(f"Removed message handler with {handler.match}")
 
     def register_msg_handler(
         self,
         match: Match,
-        func: MessageHandlerFunc,
+        func: Callable[["SendMessageEvent", "VillaBot", TR], Awaitable[Any]],
         temp: bool = False,
     ):
-        self.message_handlers.append(MessageHandler(match, func, temp))
+        self.message_handlers.append(MessageHandler[TR](match, func, temp))
         logger.info(
             f"Registered the handler {func} with {match} (temp: {temp})",
         )
@@ -254,10 +294,16 @@ class VillaBot(
         self,
         match: Match,
         temp: bool = False,
-    ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
+    ) -> Callable[
+        [Callable[["SendMessageEvent", "VillaBot", TR], Awaitable[Any]]],
+        Callable[["SendMessageEvent", "VillaBot", TR], Awaitable[Any]],
+    ]:
         def wrapper(
-            func: MessageHandlerFunc,
-        ) -> MessageHandlerFunc:
+            func: Callable[
+                ["SendMessageEvent", "VillaBot", TR],
+                Awaitable[Any],
+            ],
+        ) -> Callable[["SendMessageEvent", "VillaBot", TR], Awaitable[Any]]:
             self.register_msg_handler(match, func, temp)
             return func
 
@@ -267,10 +313,10 @@ class VillaBot(
         self,
         pattern: str | re.Pattern,
         temp: bool = False,
-    ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
+    ) -> Callable[[RegexHandlerFunc], RegexHandlerFunc]:
         def wrapper(
-            func: MessageHandlerFunc,
-        ) -> MessageHandlerFunc:
+            func: RegexHandlerFunc,
+        ) -> RegexHandlerFunc:
             self.register_msg_handler(Regex(pattern), func, temp)
             return func
 
@@ -280,10 +326,10 @@ class VillaBot(
         self,
         prefix: str,
         temp: bool = False,
-    ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
+    ) -> Callable[[StartswithHandlerFunc], StartswithHandlerFunc]:
         def wrapper(
-            func: MessageHandlerFunc,
-        ) -> MessageHandlerFunc:
+            func: StartswithHandlerFunc,
+        ) -> StartswithHandlerFunc:
             self.register_msg_handler(Startswith(prefix), func, temp)
             return func
 
@@ -293,10 +339,10 @@ class VillaBot(
         self,
         suffix: str,
         temp: bool = False,
-    ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
+    ) -> Callable[[EndswithHandlerFunc], EndswithHandlerFunc]:
         def wrapper(
-            func: MessageHandlerFunc,
-        ) -> MessageHandlerFunc:
+            func: EndswithHandlerFunc,
+        ) -> EndswithHandlerFunc:
             self.register_msg_handler(Endswith(suffix), func, temp)
             return func
 
@@ -306,10 +352,10 @@ class VillaBot(
         self,
         *keywords: str,
         temp: bool = False,
-    ) -> Callable[[MessageHandlerFunc], MessageHandlerFunc]:
+    ) -> Callable[[KeywordsHandlerFunc], KeywordsHandlerFunc]:
         def wrapper(
-            func: MessageHandlerFunc,
-        ) -> MessageHandlerFunc:
+            func: KeywordsHandlerFunc,
+        ) -> KeywordsHandlerFunc:
             self.register_msg_handler(Keywords(*keywords), func, temp)
             return func
 
