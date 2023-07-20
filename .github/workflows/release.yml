@@ -57,3 +57,5 @@ jobs:
         run: |
           pdm publish
           gh release create ${{ env.TAG }} -F CHANGELOG.md -t ${{ env.TAG }} dist/*.tar.gz dist/*.whl
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
