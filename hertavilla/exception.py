@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+call_api_exceptions: dict[int, type[_ExceptionWithRetcode]] = {}
+
 
 class PubkeyNoneWarning(Warning):
     ...
@@ -39,10 +41,50 @@ class CallingApiException(_ExceptionWithRetcode):
             f"retcode={self.retcode}, message={self.message!r}>"
         )
 
+    def __init_subclass__(cls, retcode: int) -> None:
+        call_api_exceptions[retcode] = cls
+        return super().__init_subclass__()
+
     def __str__(self) -> str:
         return repr(self)
 
 
+class UnknownServerError(CallingApiException, retcode=-502):
+    ...
+
+
+class InvalidRequest(CallingApiException, retcode=-1):
+    ...
+
+
+class InsufficientPermission(CallingApiException, retcode=10318001):
+    ...
+
+
+class BotNotAdded(CallingApiException, retcode=10322002):
+    ...
+
+
+class PermissionDenied(CallingApiException, retcode=10322003):
+    ...
+
+
+class InvalidMemberBotAccessToken(CallingApiException, retcode=10322004):
+    ...
+
+
+class InvalidBotAuthInfo(CallingApiException, retcode=10322005):
+    ...
+
+
+class UnsupportedMsgType(CallingApiException, retcode=10322006):
+    ...
+
+
 def raise_exception(payload: dict[str, Any]):
     if payload["retcode"] != 0:
-        raise CallingApiException(payload["retcode"], payload["message"])
+        retcode = payload["retcode"]
+        raise call_api_exceptions.get(retcode, CallingApiException)(
+            retcode,
+            payload["message"],
+        )
