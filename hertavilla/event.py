@@ -1,6 +1,7 @@
 # ruff: noqa: A003
 from __future__ import annotations
 
+from enum import IntEnum
 import json
 import sys
 from typing import Any, List, Literal, Optional, Type
@@ -222,6 +223,40 @@ class AddQuickEmoticonEvent(Event):
 
     is_cancel: bool = False
     """是否是取消表情"""
+
+
+class AuditResult(IntEnum):
+    COMPATIBLE = 0
+    APPROVED = 1
+    REJECTED = 2
+
+
+class AuditCallbackEvent(Event):
+    type: Literal[6]
+
+    audit_id: str
+    """审核事件 id"""
+
+    bot_tpl_id: str
+    """机器人 id"""
+
+    room_id: int
+    """房间 id（和审核接口调用方传入的值一致）"""
+
+    user_id: int
+    """用户 id（和审核接口调用方传入的值一致）"""
+
+    pass_through: Optional[str] = None
+    """透传数据（和审核接口调用方传入的值一致）"""
+
+    audit_result: AuditResult
+    """审核结果，0作兼容，1审核通过，2审核驳回"""
+
+    def __bool__(self) -> bool:
+        return self.audit_result != AuditResult.REJECTED
+
+    def compare(self, audit_id: str, pass_through: str | None = None) -> bool:
+        return self.audit_id == audit_id and self.pass_through == pass_through
 
 
 def parse_event(payload: dict[str, Any]) -> Event:
