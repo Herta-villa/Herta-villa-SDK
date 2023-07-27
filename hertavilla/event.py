@@ -30,13 +30,13 @@ events: dict[int, tuple[Type["Event"], str]] = {}
 
 class Command(BaseModel):
     name: str
-    desc: str
+    desc: Optional[str] = None
 
 
 class Template(BaseModel):
     id: str
     name: str
-    desc: str
+    desc: Optional[str] = None
     icon: str
     commands: List[Command]
 
