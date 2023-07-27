@@ -36,7 +36,7 @@ class Command(BaseModel):
 class Template(BaseModel):
     id: str
     name: str
-    desc: str
+    desc: Optional[str] = None
     icon: str
     commands: List[Command]
 
