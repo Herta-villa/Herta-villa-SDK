@@ -11,11 +11,20 @@
     {
       "title": "## 🐛 Bug 修复",
       "labels": ["🐛bug"]
+    },
+    {
+      "title": "## 📝 文档更新",
+      "labels": ["📝documentation"]
+    },
+    {
+      "title": "## 💫 其他更改",
+      "labels": [],
+      "exclude_labels": ["release"]
     }
   ],
   "sort": {
-    "order":"ASC",
-    "on_property":"mergedAt"
+    "order": "ASC",
+    "on_property": "mergedAt"
   },
   "template": "${{CHANGELOG}}",
   "pr_template": "- ${{TITLE}} (${{URL}}, by @${{AUTHOR}})",
