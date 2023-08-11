@@ -16,6 +16,7 @@ from typing import (
 )
 import urllib.parse
 
+from hertavilla.apis.audit import AuditAPIMixin
 from hertavilla.apis.auth import AuthAPIMixin
 from hertavilla.apis.img import ImgAPIMixin
 from hertavilla.apis.member import MemberAPIMixin
@@ -106,6 +107,7 @@ class VillaBot(
     VillaAPIMixin,
     RoleAPIMixin,
     ImgAPIMixin,
+    AuditAPIMixin,
 ):
     def __init__(
         self,
