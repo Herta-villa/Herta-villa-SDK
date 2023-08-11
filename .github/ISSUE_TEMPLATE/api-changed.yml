@@ -1,6 +1,6 @@
-name: 建议
-title: "Feature: "
-description: 提出关于项目新功能的想法
+name: 提出 API 变动
+title: "API Changed: "
+description: API、事件、返回模型等发生变动
 labels: ["✨feature"]
 body:
   - type: input
@@ -19,6 +19,6 @@ body:
       required: true
 
   - type: textarea
-    id: docs
+    id: description
     attributes:
       label: 详细描述
