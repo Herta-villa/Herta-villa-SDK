@@ -10,9 +10,9 @@ from hertavilla.message.image import (
     ImageMsgContentInfo,
     image_to_content,
 )
+from hertavilla.message.internal import MsgContentInfo, _Segment
 from hertavilla.message.post import Post, post_to_content
 from hertavilla.message.text import Text, text_to_content
-from hertavilla.message.types import MsgContentInfo, _Segment
 
 if TYPE_CHECKING:
     from hertavilla.bot import VillaBot

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hertavilla.message.types import (
+from hertavilla.message.internal import (
     MsgContent,
     MsgContentInfo,
     _Segment,

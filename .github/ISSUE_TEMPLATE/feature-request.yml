@@ -1,0 +1,19 @@
+name: 提出建议建议
+title: "Feature: "
+description: 提出关于项目新功能的想法
+labels: ["✨feature"]
+body:
+  - type: textarea
+    id: purpose
+    attributes:
+      label: 目的
+      description: 需要实现的功能
+    validations:
+      required: true
+
+  - type: textarea
+    id: resolution
+    attributes:
+      label: 可行的实现方式
+    validations:
+      required: true
