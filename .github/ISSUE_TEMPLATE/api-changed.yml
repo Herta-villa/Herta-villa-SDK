@@ -1,0 +1,24 @@
+name: 建议
+title: "Feature: "
+description: 提出关于项目新功能的想法
+labels: ["✨feature"]
+body:
+  - type: input
+    id: api
+    attributes:
+      label: 变化部分
+      description: 变化的 API、事件或 API 返回模型
+    validations:
+      required: true
+
+  - type: input
+    id: docs
+    attributes:
+      label: 文档地址
+    validations:
+      required: true
+
+  - type: textarea
+    id: docs
+    attributes:
+      label: 详细描述
