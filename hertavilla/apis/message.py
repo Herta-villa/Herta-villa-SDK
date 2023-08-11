@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import json
 
-from hertavilla.apis.base import _BaseAPIMixin
-from hertavilla.message.types import MsgContentInfo
+from hertavilla.apis.internal import _BaseAPIMixin
+from hertavilla.message.internal import MsgContentInfo
 from hertavilla.utils import MsgEncoder
 
 

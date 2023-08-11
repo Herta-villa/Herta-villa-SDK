@@ -14,7 +14,7 @@ def test_utf16_cal():
 def test_msg_encoder():
     import json
 
-    from hertavilla.message.types import MsgContent
+    from hertavilla.message.internal import MsgContent
     from hertavilla.utils import MsgEncoder
 
     class TestMsgContent(MsgContent):

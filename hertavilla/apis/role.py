@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, Sequence
 
-from hertavilla.apis.base import _BaseAPIMixin
+from hertavilla.apis.internal import _BaseAPIMixin
 from hertavilla.model import Role, RoleColor, RolePermission
 
 from pydantic import parse_obj_as
