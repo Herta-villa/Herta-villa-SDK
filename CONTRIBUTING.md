@@ -57,6 +57,7 @@
 - 代码需经过 ruff linter（可使用 `pdm run lint` 执行）的检查
   - 自动修复可以使用 `pdm run fix`
   - 建议使用 pre-commit hook
+- docstrings 使用 [Google Style](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings)
 - Commit Message 使用 [gitmoji](https://gitmoji.dev)
 
 ## 代码结构
@@ -90,7 +91,7 @@ API 使用 Mixin，在各 Mixin 类编写 API 实现，然后 Mixin 到 `VillaBo
 >
 > 则取 `villa` 作为类别。
 
-然后，增加、改动或删除 API。
+然后，增加、改动或删除 API。（需要编写 API 文档）
 
 > self.base_request 提供了请求接口，按 Type Hints 填写参数；
 >
@@ -99,6 +100,8 @@ API 使用 Mixin，在各 Mixin 类编写 API 实现，然后 Mixin 到 `VillaBo
 > JSON Data 使用 `data` 传递，POST 请求的参数使用此方法传递；
 >
 > **请勿在使用 GET 方法时传递 JSON Data**。
+>
+> 需要权限的 API 需要传入 `villa_id`，需要权限的 API 可参考 [接口权限表](https://webstatic.mihoyo.com/vila/bot/doc/permissions.html)
 
 > 简单模型（如返回值只为一个 key 的可以直接返回，如[图片转存 API](https://github.com/Herta-villa/Herta-villa-SDK/blob/master/hertavilla/apis/img.py#L21-L28)）
 >
