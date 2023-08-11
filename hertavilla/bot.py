@@ -154,7 +154,7 @@ class VillaBot(
         return self.bot_info.commands
 
     @property
-    def description(self) -> str:
+    def description(self) -> str | None:
         """Bot 介绍"""
         return self.bot_info.desc
 
