@@ -67,7 +67,7 @@ run(bot)  # 运行 bot
 
 ## 示例
 
-详见 [examples](./examples/) 文件夹
+详见 [examples](./examples/) 文件夹。
 
 ## 支持的 API
 
@@ -117,6 +117,8 @@ run(bot)  # 运行 bot
 ## Bug 反馈及建议
 
 大别野 Bot 和 Herta SDK 均处于开发状态中，如遇到问题或有相关建议可通过 [Issue](https://github.com/Herta-villa/Herta-villa-SDK/issues/new) 提出，感谢支持！
+
+有关提出 Issue 和 Pull Request 的要点，请查看 [贡献指南](./CONTRIBUTING.md)。
 
 ## 相关项目
 

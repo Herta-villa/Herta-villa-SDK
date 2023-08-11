@@ -1,0 +1,73 @@
+name: Bug 反馈
+title: "Bug: "
+description: 提交 Bug 反馈以帮助我们改进代码
+labels: ["🐛bug"]
+body:
+  - type: dropdown
+    id: env-os
+    attributes:
+      label: 操作系统
+      options:
+        - Windows
+        - MacOS
+        - Linux
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: env-python-ver
+    attributes:
+      label: Python 版本
+      placeholder: e.g. 3.11.0
+    validations:
+      required: true
+
+  - type: input
+    id: env-ver
+    attributes:
+      label: SDK 版本
+      placeholder: e.g. 0.8.0
+    validations:
+      required: true
+
+  - type: input
+    id: env-backend
+    attributes:
+      label: 运行后端
+      description: 运行时使用的后端
+      placeholder: e.g. AIOHTTP
+    validations:
+      required: true
+
+  - type: textarea
+    id: describe
+    attributes:
+      label: 描述问题
+      description: 清晰简洁地说明问题是什么
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 复现步骤
+      description: 提供能复现此问题的详细操作步骤
+      placeholder: |
+        1. 首先……
+        2. 然后……
+        3. 发生……
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望的结果
+      description: 清晰简洁地描述你期望发生的事情
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 截图或日志
+      description: 提供有助于诊断问题的任何日志和截图

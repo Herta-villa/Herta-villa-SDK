@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, List, Literal, Optional, cast
 
 from hertavilla.message.image import ImageMsgContent
-from hertavilla.message.types import MsgContent, MsgContentInfo, _Segment
+from hertavilla.message.internal import MsgContent, MsgContentInfo, _Segment
 from hertavilla.typing import TypedDict
 from hertavilla.utils import _c
 

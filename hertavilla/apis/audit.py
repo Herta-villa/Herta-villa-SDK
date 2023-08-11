@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from hertavilla.apis.base import _BaseAPIMixin
+from hertavilla.apis.internal import _BaseAPIMixin
 
 
 class AuthAPIMixin(_BaseAPIMixin):

@@ -5,7 +5,7 @@ import json
 
 class MsgEncoder(json.JSONEncoder):
     def default(self, obj):
-        from hertavilla.message.types import MsgContent
+        from hertavilla.message.internal import MsgContent
 
         if isinstance(obj, MsgContent):
             data = obj.dict()
