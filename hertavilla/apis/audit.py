@@ -3,7 +3,7 @@ from __future__ import annotations
 from hertavilla.apis.internal import _BaseAPIMixin
 
 
-class AuthAPIMixin(_BaseAPIMixin):
+class AuditAPIMixin(_BaseAPIMixin):
     async def audit(
         self,
         villa_id: int,
