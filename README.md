@@ -131,6 +131,6 @@ run(bot)  # 运行 bot
 
 ## 许可证
 
-[MIT License](./LiCENSE)
+[MIT License](./LICENSE)
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FHerta-villa%2FHerta-villa-SDK.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FHerta-villa%2FHerta-villa-SDK?ref=badge_large)
