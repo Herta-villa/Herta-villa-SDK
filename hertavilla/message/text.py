@@ -95,8 +95,13 @@ class VillaRoomLink(_TextEntity):
 class Link(_TextEntity):
     type_ = "link"
 
-    def __init__(self, url: str) -> None:
+    def __init__(
+        self,
+        url: str,
+        requires_bot_access_token: bool = False,
+    ) -> None:
         self.url = url
+        self.requires_bot_access_token = requires_bot_access_token
 
     async def get_text(self, _: VillaBot) -> str:
         return self.url
