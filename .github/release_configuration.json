@@ -18,10 +18,10 @@
     },
     {
       "title": "## 💫 其他更改",
-      "labels": [],
-      "exclude_labels": ["release"]
+      "labels": []
     }
   ],
+  "ignore_labels": ["release"],
   "sort": {
     "order": "ASC",
     "on_property": "mergedAt"
