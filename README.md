@@ -4,6 +4,7 @@
 [![pypi](https://img.shields.io/pypi/v/herta-villa-sdk)](https://pypi.python.org/pypi/herta-villa-sdk)
 ![python version](https://img.shields.io/badge/Python-3.8+-green)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FHerta-villa%2FHerta-villa-SDK.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FHerta-villa%2FHerta-villa-SDK?ref=badge_shield)
 
 大别野「黑塔」Python SDK
 
@@ -127,3 +128,9 @@ run(bot)  # 运行 bot
 ## 交流
 
 - 前往大别野[「斩尽芜杂」](https://dby.miyoushe.com/chat/1785/25317)（`aaUeZqd`）
+
+## 许可证
+
+[MIT License](./LICENSE)
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FHerta-villa%2FHerta-villa-SDK.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FHerta-villa%2FHerta-villa-SDK?ref=badge_large)
