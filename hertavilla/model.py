@@ -284,3 +284,8 @@ class Emoticon(BaseModel):
 
     icon: str
     """表情图片链接"""
+
+
+class AuditContentType(str, Enum):
+    TEXT = "AuditContentTypeText"
+    IMAGE = "AuditContentTypeImage"
