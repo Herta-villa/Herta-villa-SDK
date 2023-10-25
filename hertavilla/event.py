@@ -161,6 +161,8 @@ class MessageContent(BaseModel):
                 Text(text[_rc(end_offset) :].decode("utf-16")),
             )
         return chain
+
+
 class QuoteMsg(BaseModel):
     content: str
     msg_uid: str
