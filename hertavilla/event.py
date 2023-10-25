@@ -161,6 +161,15 @@ class MessageContent(BaseModel):
                 Text(text[_rc(end_offset) :].decode("utf-16")),
             )
         return chain
+class QuoteMsg(BaseModel):
+    content: str
+    msg_uid: str
+    bot_msg_id: Optional[str]
+    send_at: int
+    msg_type: Literal["文本", "图片", "帖子卡片"]
+    from_user_id: int
+    from_user_nickname: str
+    from_user_id_str: str
 
 
 class SendMessageEvent(Event):
@@ -182,6 +191,7 @@ class SendMessageEvent(Event):
     """消息 id"""
     bot_msg_id: Optional[str]
     """如果被回复的消息从属于机器人，则该字段不为空字符串"""
+    quote_msg: Optional[QuoteMsg]
 
     @validator("content", pre=True)
     def str_to_json(cls, v: Any):
