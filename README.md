@@ -104,6 +104,7 @@ run(bot)  # 运行 bot
   - [x] 获取全量表情 `/getAllEmoticons`
 - [x] 图片
   - [x] 图片转存 `/transferImage`
+  - [x] 获取图片上传参数 `/getUploadImageParams`
 - [x] 审核 `/audit`
 
 ## 支持的事件
