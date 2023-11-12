@@ -4,6 +4,8 @@ from __future__ import annotations
 from enum import Enum
 from typing import List, Optional
 
+from hertavilla.typing import TypedDict
+
 from pydantic import BaseModel
 
 
@@ -289,3 +291,34 @@ class Emoticon(BaseModel):
 class AuditContentType(str, Enum):
     TEXT = "AuditContentTypeText"
     IMAGE = "AuditContentTypeImage"
+
+
+class OSSParams(TypedDict):
+    accessid: str
+    callback: str
+    callback_var: dict
+    dir: str
+    expire: str
+    host: str
+    name: str
+    policy: str
+    signature: str
+    x_oss_content_type: str
+    object_acl: str
+    content_disposition: str
+    key: str
+    success_action_status: str
+
+
+class UploadParams(TypedDict):
+    type: str
+    """上传类型，oss"""
+
+    file_name: str
+    """上传后文件名"""
+
+    max_file_size: int
+    """上传文件大小限制，单位 KB"""
+
+    params: OSSParams
+    """oss 上传参数对象"""
