@@ -89,20 +89,12 @@ class ImgAPIMixin(_BaseAPIMixin):
                 "policy": params["params"]["policy"],
             },
         )
-        # for k, v in .items():
-        #     form.add_field(k, v, content_type="text/plain")
-        form.add_field(
-            "file",
-            image,
-            filename=params["file_name"],
-            content_type="image/png",
-        )
+        form.add_field("file", image)
         async with ClientSession() as session:
             async with session.post(
                 params["params"]["host"],
                 data=form,
             ) as resp:
-                await resp.json()
                 if not resp.ok:
                     raise HTTPStatusError(resp.status)
                 return (await resp.json())["data"]["url"]
