@@ -129,5 +129,5 @@ class KeywordsResult(MatchResult):
     matched_keywords: set[str]
 
     @property
-    def keywords(self) -> tuple[str]:
+    def keywords(self) -> tuple[str, ...]:
         return self.match.keywords
