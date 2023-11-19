@@ -27,6 +27,9 @@ fastapi = [
     "fastapi>=0.100.0",
     "uvicorn>=0.22.0",
 ]
+ws = [
+    "protobuf>=4.25.1",
+]
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
