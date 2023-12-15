@@ -6,7 +6,7 @@ groups = ["default", "dev", "fastapi", "test", "ws"]
 cross_platform = true
 static_urls = false
 lock_version = "4.3"
-content_hash = "sha256:bcce4f1422a9d22c2f4ff62df84d320b281d10d9301eb88f885a57df6931bfd3"
+content_hash = "sha256:80748b462f32877a9aca0464c0d5fff78e252a0d999213945dfc6d9ac5a0ea57"
 
 [[package]]
 name = "aiohttp"
@@ -509,6 +509,20 @@ files = [
 ]
 
 [[package]]
+name = "mypy-protobuf"
+version = "3.5.0"
+requires_python = ">=3.8"
+summary = "Generate mypy stub files from protobuf specs"
+dependencies = [
+    "protobuf>=4.23.4",
+    "types-protobuf>=4.23.0.2",
+]
+files = [
+    {file = "mypy-protobuf-3.5.0.tar.gz", hash = "sha256:21f270da0a9792a9dac76b0df463c027e561664ab6973c59be4e4d064dfe67dc"},
+    {file = "mypy_protobuf-3.5.0-py3-none-any.whl", hash = "sha256:0d0548c6b9a6faf14ce1a9ce2831c403a5c1f2a9363e85b1e2c51d5d57aa8393"},
+]
+
+[[package]]
 name = "nodeenv"
 version = "1.8.0"
 requires_python = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*"
@@ -795,6 +809,16 @@ summary = "A lil' TOML parser"
 files = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
+]
+
+[[package]]
+name = "types-protobuf"
+version = "4.24.0.4"
+requires_python = ">=3.7"
+summary = "Typing stubs for protobuf"
+files = [
+    {file = "types-protobuf-4.24.0.4.tar.gz", hash = "sha256:57ab42cb171dfdba2c74bb5b50c250478538cc3c5ed95b8b368929ad0c9f90a5"},
+    {file = "types_protobuf-4.24.0.4-py3-none-any.whl", hash = "sha256:131ab7d0cbc9e444bc89c994141327dcce7bcaeded72b1acb72a94827eb9c7af"},
 ]
 
 [[package]]
