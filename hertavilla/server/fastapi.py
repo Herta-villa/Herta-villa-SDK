@@ -21,7 +21,9 @@ except ImportError as e:
 
 class FastAPIBackend(BaseBackend):
     def __init__(self, host: str = "0.0.0.0", port: int = 8080, **kwargs: Any):
-        super().__init__(host, port, **kwargs)
+        super().__init__(**kwargs)
+        self.host = host
+        self.port = port
         self._lifespan_manager = LifespanManager()
         self._app = FastAPI(
             lifespan=self.lifespan,

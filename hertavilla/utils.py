@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import asyncio
 import json
+import logging
+from typing import Any
 
 from aiohttp import (
     BytesPayload,
@@ -10,6 +13,8 @@ from aiohttp import (
     StringPayload,
     hdrs,
 )
+
+task_logger = logging.getLogger("hertavilla.asyncio.task")
 
 
 class MsgEncoder(json.JSONEncoder):
@@ -110,3 +115,31 @@ class CustomFormData(FormData):
 
         self._is_processed = True
         return self._writer
+
+
+# https://code.luasoftware.com/tutorials/python/asyncio-graceful-shutdown/
+class TaskManager:
+    def __init__(self):
+        self.tasks = set()
+
+    async def task(self, func, result=None, *args, **kwargs) -> Any | None:
+        task_logger.debug(f"Add task: {func}({args}, {kwargs})")
+        task = asyncio.create_task(func(*args, **kwargs))
+        self.tasks.add(task)
+        try:
+            return await task
+        except asyncio.CancelledError:
+            return result
+        finally:
+            self.tasks.remove(task)
+
+    def task_nowait(self, func, *args, **kwargs):
+        task_logger.debug(f"Add task (nowait): {func}({args}, {kwargs})")
+        task = asyncio.create_task(func(*args, **kwargs))
+        self.tasks.add(task)
+        task.add_done_callback(self.tasks.remove)
+
+    def cancel_all(self):
+        for _task in self.tasks:
+            if not _task.done():
+                _task.cancel()

@@ -12,25 +12,22 @@ _backend: BaseBackend | None = None
 
 def run(
     *bots_: VillaBot,
-    host: str = "0.0.0.0",
-    port: int = 8080,
     **kwargs: Any,
 ):
     backend = get_backend()
-    backend.run(*bots_, host=host, port=port, **kwargs)
+    backend.run(*bots_, **kwargs)
 
 
 def init_backend(
     backend_class: type[BaseBackend] = DEFAULT_BACKEND,
-    host: str = "0.0.0.0",
-    port: int = 8080,
+    **kwargs: Any,
 ) -> None:
     global _backend  # noqa: PLW0603
     if _backend is not None:
         raise RuntimeError(
             "Backend has already been initialized",
         )
-    _backend = backend_class(host, port)
+    _backend = backend_class(**kwargs)
 
 
 def get_backend() -> BaseBackend:

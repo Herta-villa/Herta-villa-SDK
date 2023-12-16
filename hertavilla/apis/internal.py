@@ -24,18 +24,17 @@ class _BaseAPIMixin:
         pub_key: str,
     ):
         self.bot_id = bot_id
-        self.secret = secret
+        self.secret = hmac.new(
+            pub_key.encode(),
+            secret.encode(),
+            hashlib.sha256,
+        ).hexdigest()
         self.pub_key = pub_key
 
     def _make_header(self, villa_id: int) -> dict[str, str]:
-        secret = hmac.new(
-            self.pub_key.encode(),
-            self.secret.encode(),
-            hashlib.sha256,
-        ).hexdigest()
         return {
             "x-rpc-bot_id": self.bot_id,
-            "x-rpc-bot_secret": secret,
+            "x-rpc-bot_secret": self.secret,
             "x-rpc-bot_villa_id": str(villa_id),
         }
 

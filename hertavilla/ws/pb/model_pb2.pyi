@@ -26,7 +26,7 @@ class _RoomTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumT
     DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
     RoomTypeInvalid: _RoomType.ValueType  # 0
     RoomTypeChatRoom: _RoomType.ValueType  # 1
-    """聊天放假"""
+    """聊天房间"""
     RoomTypePostRoom: _RoomType.ValueType  # 2
     """帖子房间"""
     RoomTypeSceneRoom: _RoomType.ValueType  # 3
@@ -36,7 +36,7 @@ class RoomType(_RoomType, metaclass=_RoomTypeEnumTypeWrapper): ...
 
 RoomTypeInvalid: RoomType.ValueType  # 0
 RoomTypeChatRoom: RoomType.ValueType  # 1
-"""聊天放假"""
+"""聊天房间"""
 RoomTypePostRoom: RoomType.ValueType  # 2
 """帖子房间"""
 RoomTypeSceneRoom: RoomType.ValueType  # 3
@@ -512,48 +512,48 @@ class RobotEvent(google.protobuf.message.Message):
             ) -> None: ...
             def ClearField(self, field_name: typing_extensions.Literal["bot_msg_id", b"bot_msg_id", "component_id", b"component_id", "extra", b"extra", "msg_uid", b"msg_uid", "room_id", b"room_id", "template_id", b"template_id", "uid", b"uid", "villa_id", b"villa_id"]) -> None: ...
 
-        JOIN_VILLA_FIELD_NUMBER: builtins.int
-        SEND_MESSAGE_FIELD_NUMBER: builtins.int
-        CREATE_ROBOT_FIELD_NUMBER: builtins.int
-        DELETE_ROBOT_FIELD_NUMBER: builtins.int
-        ADD_QUICK_EMOTICON_FIELD_NUMBER: builtins.int
-        AUDIT_CALLBACK_FIELD_NUMBER: builtins.int
-        CLICK_MSG_COMPONENT_FIELD_NUMBER: builtins.int
+        JOINVILLA_FIELD_NUMBER: builtins.int
+        SENDMESSAGE_FIELD_NUMBER: builtins.int
+        CREATEROBOT_FIELD_NUMBER: builtins.int
+        DELECTROBOT_FIELD_NUMBER: builtins.int
+        ADDQUICKEMOTION_FIELD_NUMBER: builtins.int
+        AUDITCALLBACK_FIELD_NUMBER: builtins.int
+        CLICKMSGCOMPONENT_FIELD_NUMBER: builtins.int
         @property
-        def join_villa(self) -> global___RobotEvent.ExtendData.JoinVillaInfo:
+        def JoinVilla(self) -> global___RobotEvent.ExtendData.JoinVillaInfo:
             """加入大别野扩展信息"""
         @property
-        def send_message(self) -> global___RobotEvent.ExtendData.SendMessageInfo:
+        def SendMessage(self) -> global___RobotEvent.ExtendData.SendMessageInfo:
             """发送消息扩展信息"""
         @property
-        def create_robot(self) -> global___RobotEvent.ExtendData.CreateRobotInfo:
+        def CreateRobot(self) -> global___RobotEvent.ExtendData.CreateRobotInfo:
             """添加机器人扩展信息"""
         @property
-        def delete_robot(self) -> global___RobotEvent.ExtendData.DeleteRobotInfo:
+        def DelectRobot(self) -> global___RobotEvent.ExtendData.DeleteRobotInfo:
             """删除机器人扩展信息"""
         @property
-        def add_quick_emoticon(self) -> global___RobotEvent.ExtendData.AddQuickEmoticonInfo:
+        def AddQuickEmotion(self) -> global___RobotEvent.ExtendData.AddQuickEmoticonInfo:
             """表情表态扩展信息"""
         @property
-        def audit_callback(self) -> global___RobotEvent.ExtendData.AuditCallbackInfo:
+        def AuditCallback(self) -> global___RobotEvent.ExtendData.AuditCallbackInfo:
             """审核回调信息"""
         @property
-        def click_msg_component(self) -> global___RobotEvent.ExtendData.ClickMsgComponentInfo:
+        def ClickMsgComponent(self) -> global___RobotEvent.ExtendData.ClickMsgComponentInfo:
             """点击消息组件回传"""
         def __init__(
             self,
             *,
-            join_villa: global___RobotEvent.ExtendData.JoinVillaInfo | None = ...,
-            send_message: global___RobotEvent.ExtendData.SendMessageInfo | None = ...,
-            create_robot: global___RobotEvent.ExtendData.CreateRobotInfo | None = ...,
-            delete_robot: global___RobotEvent.ExtendData.DeleteRobotInfo | None = ...,
-            add_quick_emoticon: global___RobotEvent.ExtendData.AddQuickEmoticonInfo | None = ...,
-            audit_callback: global___RobotEvent.ExtendData.AuditCallbackInfo | None = ...,
-            click_msg_component: global___RobotEvent.ExtendData.ClickMsgComponentInfo | None = ...,
+            JoinVilla: global___RobotEvent.ExtendData.JoinVillaInfo | None = ...,
+            SendMessage: global___RobotEvent.ExtendData.SendMessageInfo | None = ...,
+            CreateRobot: global___RobotEvent.ExtendData.CreateRobotInfo | None = ...,
+            DelectRobot: global___RobotEvent.ExtendData.DeleteRobotInfo | None = ...,
+            AddQuickEmotion: global___RobotEvent.ExtendData.AddQuickEmoticonInfo | None = ...,
+            AuditCallback: global___RobotEvent.ExtendData.AuditCallbackInfo | None = ...,
+            ClickMsgComponent: global___RobotEvent.ExtendData.ClickMsgComponentInfo | None = ...,
         ) -> None: ...
-        def HasField(self, field_name: typing_extensions.Literal["add_quick_emoticon", b"add_quick_emoticon", "audit_callback", b"audit_callback", "click_msg_component", b"click_msg_component", "create_robot", b"create_robot", "delete_robot", b"delete_robot", "event_data", b"event_data", "join_villa", b"join_villa", "send_message", b"send_message"]) -> builtins.bool: ...
-        def ClearField(self, field_name: typing_extensions.Literal["add_quick_emoticon", b"add_quick_emoticon", "audit_callback", b"audit_callback", "click_msg_component", b"click_msg_component", "create_robot", b"create_robot", "delete_robot", b"delete_robot", "event_data", b"event_data", "join_villa", b"join_villa", "send_message", b"send_message"]) -> None: ...
-        def WhichOneof(self, oneof_group: typing_extensions.Literal["event_data", b"event_data"]) -> typing_extensions.Literal["join_villa", "send_message", "create_robot", "delete_robot", "add_quick_emoticon", "audit_callback", "click_msg_component"] | None: ...
+        def HasField(self, field_name: typing_extensions.Literal["AddQuickEmotion", b"AddQuickEmotion", "AuditCallback", b"AuditCallback", "ClickMsgComponent", b"ClickMsgComponent", "CreateRobot", b"CreateRobot", "DelectRobot", b"DelectRobot", "EventData", b"EventData", "JoinVilla", b"JoinVilla", "SendMessage", b"SendMessage"]) -> builtins.bool: ...
+        def ClearField(self, field_name: typing_extensions.Literal["AddQuickEmotion", b"AddQuickEmotion", "AuditCallback", b"AuditCallback", "ClickMsgComponent", b"ClickMsgComponent", "CreateRobot", b"CreateRobot", "DelectRobot", b"DelectRobot", "EventData", b"EventData", "JoinVilla", b"JoinVilla", "SendMessage", b"SendMessage"]) -> None: ...
+        def WhichOneof(self, oneof_group: typing_extensions.Literal["EventData", b"EventData"]) -> typing_extensions.Literal["JoinVilla", "SendMessage", "CreateRobot", "DelectRobot", "AddQuickEmotion", "AuditCallback", "ClickMsgComponent"] | None: ...
 
     ROBOT_FIELD_NUMBER: builtins.int
     TYPE_FIELD_NUMBER: builtins.int

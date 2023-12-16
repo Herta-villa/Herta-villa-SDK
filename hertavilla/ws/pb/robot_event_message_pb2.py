@@ -15,14 +15,13 @@ _sym_db = _symbol_database.Default()
 import model_pb2 as model__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19robot_event_message.proto\x12\x08vila_bot\x1a\x0bmodel.proto\"8\n\x11RobotEventMessage\x12#\n\x05\x65vent\x18\x01 \x01(\x0b\x32\x14.vila_bot.RobotEventB6Z4gopkg.mihoyo.com/vila-bot-go/proto/vila_bot;vila_botb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19robot_event_message.proto\x12\x08vila_bot\x1a\x0bmodel.proto\"8\n\x11RobotEventMessage\x12#\n\x05\x65vent\x18\x01 \x01(\x0b\x32\x14.vila_bot.RobotEventb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'robot_event_message_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
-  _globals['DESCRIPTOR']._options = None
-  _globals['DESCRIPTOR']._serialized_options = b'Z4gopkg.mihoyo.com/vila-bot-go/proto/vila_bot;vila_bot'
+  DESCRIPTOR._options = None
   _globals['_ROBOTEVENTMESSAGE']._serialized_start=52
   _globals['_ROBOTEVENTMESSAGE']._serialized_end=108
 # @@protoc_insertion_point(module_scope)

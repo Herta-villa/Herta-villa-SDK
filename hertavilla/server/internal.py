@@ -28,9 +28,7 @@ NO_BOT = ResponseData(404, 1, "no bot with this id")
 
 
 class BaseBackend(abc.ABC):
-    def __init__(self, host: str = "0.0.0.0", port: int = 8080, **kwargs: Any):
-        self.host = host
-        self.port = port
+    def __init__(self, **kwargs: Any):
         self.backend_extra_config = kwargs
         self.bots: dict[str, VillaBot] = {}
         self.logger = logging.getLogger(
