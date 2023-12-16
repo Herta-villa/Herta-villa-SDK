@@ -9,6 +9,8 @@ from typing import Any, Callable, Sequence
 
 from hertavilla.bot import VillaBot
 from hertavilla.event import parse_event
+from hertavilla.utils import TaskManager
+from hertavilla.ws.connection import WSConnection
 
 from ._lifespan import L_FUNC
 
@@ -31,6 +33,8 @@ class BaseBackend(abc.ABC):
     def __init__(self, **kwargs: Any):
         self.backend_extra_config = kwargs
         self.bots: dict[str, VillaBot] = {}
+        self.ws_connections: set[WSConnection] = set()
+        self.task_manager = TaskManager()
         self.logger = logging.getLogger(
             f"hertavilla.backend.{self.name.lower()}",
         )
@@ -111,3 +115,15 @@ class BaseBackend(abc.ABC):
             f"Received event but no bot with id {event.robot.template.id}",
         )
         return NO_BOT
+
+    async def _start_ws(self, bots: tuple[VillaBot, ...]) -> None:
+        for bot in (bot for bot in bots if bot.use_websocket):
+            conn = WSConnection(bot, self.ws_connections)
+            self.ws_connections.add(conn)
+            self.task_manager.task_nowait(conn.connect)
+        self.on_shutdown(self._stop_ws)
+
+    async def _stop_ws(self) -> None:
+        for conn in self.ws_connections:
+            await conn.logout()
+        await asyncio.sleep(1)

@@ -73,6 +73,7 @@ class FastAPIBackend(BaseBackend):
                 methods=["POST"],
             ),
         )
+        self.on_startup(functools.partial(self._start_ws, bots_))
         uvicorn.run(
             self.app,
             host=host or self.host,

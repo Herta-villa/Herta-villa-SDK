@@ -58,6 +58,7 @@ class AIOHTTPBackend(BaseBackend):
         )
         self.app.on_startup.append(self._run_startup)
         self.app.on_cleanup.append(self._run_shutdown)
+        self.on_startup(functools.partial(self._start_ws, bots_))
         web.run_app(
             self.app,
             host=host or self.host,
