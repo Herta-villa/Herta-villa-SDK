@@ -58,7 +58,8 @@ class LoopBackend(BaseBackend):
     async def _run(self, bots_: tuple[VillaBot, ...]):
         await self.lifespan_manager.startup()
         await self._start_ws(bots_)
-        self.task_manager.task_nowait(self._watch_conns)
+        if self.auto_shutdown:
+            self.task_manager.task_nowait(self._watch_conns)
         await self._loop()
         await self._shutdown()
 
