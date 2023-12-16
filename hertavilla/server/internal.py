@@ -124,6 +124,8 @@ class BaseBackend(abc.ABC):
         self.on_shutdown(self._stop_ws)
 
     async def _stop_ws(self) -> None:
+        if len(self.ws_connections) == 0:
+            return
         for conn in self.ws_connections:
             await conn.logout()
         await asyncio.sleep(1)
