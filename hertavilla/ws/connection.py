@@ -237,7 +237,7 @@ class WSConnection:
         logging.debug(f"[{self.bot.bot_id}] Trying to login")
         login = Login(
             uid=int(ws_info['uid']),
-            token=f"{self.bot.test_villa_id}.{self.bot.secret}.{self.bot.bot_id}",
+            token=f"{self.bot.test_villa_id}.{self.bot.secret_encrypted}.{self.bot.bot_id}",
             platform=ws_info['platform'],
             app_id=ws_info['app_id'],
             device_id=ws_info['device_id'],
