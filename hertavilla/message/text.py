@@ -70,8 +70,13 @@ class _TextEntity(_Segment):
 
 
 class Text(_TextEntity):
-    def __init__(self, text: str) -> None:
+    def __init__(
+        self,
+        text: str,
+        *styles: Literal["bold", "italic", "strikethrough", "underline"],
+    ) -> None:
         self.text = text
+        self.styles = styles
 
     async def get_text(self, _: VillaBot) -> str:
         return self.text
@@ -198,6 +203,16 @@ async def text_to_content(
         if isinstance(entity, Text):
             text = str(entity)
             length = len(text)
+            entities.extend(
+                (
+                    {
+                        "entity": {"type": "style", "font_style": style},
+                        "length": length,
+                        "offset": offset,
+                    }
+                    for style in entity.styles
+                ),
+            )
         else:
             text = f"{await entity.get_text(bot)}{space}"
             length = _c(text)
