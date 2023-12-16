@@ -98,7 +98,7 @@ class WSConn:
             # 客户端收到 Kickoff 协议表示当前设备已经被踢下线
             # 需要断开连接并且不再重连
             logger.warning(
-                f"[{self.bot.bot_id}] Kicked off by server. ",
+                f"[{self.bot.bot_id}] Kicked off by server. "
                 f"Code: {pack.code}, Reason: {pack.reason}",
             )
             raise StopConnecting

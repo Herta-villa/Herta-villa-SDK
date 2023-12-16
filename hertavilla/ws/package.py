@@ -160,10 +160,10 @@ class HeartBeatReply(Package, pb_stub=PHeartBeatReply, flag=FlagType.RESPONSE):
 
 @dataclass(repr=True)
 class KickOff(Package, pb_stub=PKickOff, flag=FlagType.RESPONSE):
-    code: int
+    code: int = 0
     """踢出原因状态码"""
 
-    reason: str
+    reason: str = ""
     """状态码对应的文案"""
 
     biz_type: ClassVar[BizType] = BizType.P_KICK_OFF
