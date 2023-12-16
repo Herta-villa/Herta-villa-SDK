@@ -99,9 +99,6 @@ KeywordsHandlerFunc = Callable[
     ["SendMessageEvent", "VillaBot", KeywordsResult],
     Awaitable[Any],
 ]
-# class WSConfig(BaseModel):
-#     : int = 0
-#     """测试别野 id"""
 
 
 class VillaBot(

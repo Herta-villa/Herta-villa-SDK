@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import logging
 import struct
 import sys
 
@@ -16,7 +15,6 @@ MAGIC = 0xBABEFACE
 HEADER_LEN_V2 = 24
 HEADER_LEN_V1 = 20
 FIX_HEADER_LEN = 8
-logger = logging.getLogger("hertavilla.ws.payload")
 
 
 @dataclass
