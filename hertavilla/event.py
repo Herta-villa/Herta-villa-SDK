@@ -252,7 +252,7 @@ class AuditCallbackEvent(Event):
     bot_tpl_id: str
     """机器人 id"""
 
-    room_id: int | None = None
+    room_id: Optional[int] = None
     """房间 id（和审核接口调用方传入的值一致）"""
 
     user_id: int
@@ -269,6 +269,31 @@ class AuditCallbackEvent(Event):
 
     def compare(self, audit_id: str, pass_through: str | None = None) -> bool:
         return self.audit_id == audit_id and self.pass_through == pass_through
+
+
+class ClickMsgComponentEvent(Event):
+    type: Literal[7]
+
+    room_id: int
+    """房间 id"""
+
+    uid: int
+    """用户 id"""
+
+    msg_uid: str
+    """消息 id"""
+
+    bot_msg_id: str = ""
+    """如果消息从属于机器人，则该字段不为空字符串"""
+
+    component_id: str
+    """机器人自定义的组件id"""
+
+    template_id: int = 0
+    """如果该组件模板为已创建模板，则template_id不为0"""
+
+    extra: str = ""
+    """机器人自定义透传信息"""
 
 
 def parse_event(payload: dict[str, Any]) -> Event:

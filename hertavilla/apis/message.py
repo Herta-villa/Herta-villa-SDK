@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 from hertavilla.apis.internal import _BaseAPIMixin
+from hertavilla.message.component import Panel
 from hertavilla.message.internal import MsgContentInfo
 from hertavilla.utils import MsgEncoder
 
@@ -96,4 +97,34 @@ class MessageAPIMixin(_BaseAPIMixin):
                 "room_id": room_id,
                 "msg_time": msg_time,
             },
+        )
+
+    async def create_component_template(
+        self,
+        villa_id: int,
+        panel: Panel,
+    ) -> int:
+        """创建消息组件模板，创建成功后会返回 template_id，
+        发送消息时，可以使用 template_id 填充 component_board
+
+        Args:
+            villa_id (int): 大别野 id
+            panel (Panel): 消息组件面板
+
+        Returns:
+            int: 组件模板id
+        """
+        if template_id := (panel_dict := panel.to_dict()).get("template_id"):
+            return template_id
+        return int(
+            (
+                await self.base_request(
+                    "/createComponentTemplate",
+                    "POST",
+                    villa_id,
+                    data={
+                        "panel": json.dumps(panel_dict),
+                    },
+                )
+            )["template_id"],
         )
