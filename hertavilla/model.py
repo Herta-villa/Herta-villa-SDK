@@ -322,3 +322,20 @@ class UploadParams(TypedDict):
 
     params: OSSParams
     """oss 上传参数对象"""
+
+
+class WebSocketInfo(TypedDict):
+    websocket_url: str
+    """Websocket 接入地址"""
+
+    uid: str
+    """Websocket 连接使用的 uid 参数"""
+
+    app_id: int
+    """Websocket 接入使用的 app_id 参数"""
+
+    platform: int
+    """Websocket 接入使用的 platform 参数"""
+
+    device_id: str
+    """Websocket 接入使用的 device_id 参数"""

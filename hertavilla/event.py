@@ -274,7 +274,9 @@ class AuditCallbackEvent(Event):
 def parse_event(payload: dict[str, Any]) -> Event:
     type_: int = payload["type"]
     cls_, name = events[type_]
-    data = payload["extend_data"]["EventData"][name]
+    extend = payload["extend_data"]
+    # support ws
+    data = extend["EventData"][name] if "EventData" in extend else extend[name]
     payload.pop("extend_data")
     payload |= data
     return cls_.parse_obj(payload)
