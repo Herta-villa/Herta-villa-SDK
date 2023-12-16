@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import IntEnum
-from typing import TYPE_CHECKING, List, Literal
+from typing import TYPE_CHECKING, Any, List, Literal
 
 from hertavilla.message.internal import _Segment
 
@@ -114,6 +114,17 @@ class Panel(_Segment):
 
     async def get_text(self, _: "VillaBot") -> str:
         return "[Panel]"
+
+    def to_dict(
+        self,
+    ) -> dict[str, Any]:
+        if (template_id := self.template_id) is not None:
+            return {"template_id": template_id}
+        return {
+            "small_component_group_list": self.small.dict()["__root__"],
+            "mid_component_group_list": self.mid.dict()["__root__"],
+            "big_component_group_list": self.big.dict()["__root__"],
+        }
 
     # def insert(self, target: Literal["small", "mid", "big"], index: tuple[int, int], component: Component) -> None:  # noqa: E501
 

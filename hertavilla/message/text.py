@@ -175,18 +175,6 @@ class TextMsgContent(MsgContent):
     images: Optional[List[ImageMsgContent]] = None
 
 
-def _make_panel(
-    panel: Panel,
-) -> dict[str, Any]:
-    if (template_id := panel.template_id) is not None:
-        return {"template_id": template_id}
-    return {
-        "small_component_group_list": panel.small.dict()["__root__"],
-        "mid_component_group_list": panel.mid.dict()["__root__"],
-        "big_component_group_list": panel.big.dict()["__root__"],
-    }
-
-
 async def text_to_content(
     text_entities: list[_TextEntity],
     bot: VillaBot,
@@ -262,5 +250,5 @@ async def text_to_content(
         ),
         "quote": quote,
         "mentionedInfo": mentioned_info,
-        "panel": _make_panel(panel) if panel is not None else None,
+        "panel": panel.to_dict() if panel is not None else None,
     }
