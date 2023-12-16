@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Literal, Optional, cast
 
+from hertavilla.message.component import Panel
 from hertavilla.message.image import ImageMsgContent
 from hertavilla.message.internal import MsgContent, MsgContentInfo, _Segment
 from hertavilla.typing import TypedDict
@@ -19,6 +20,7 @@ class TextMsgContentInfo(MsgContentInfo):
     content: TextMsgContent
     mentionedInfo: Optional[MentionedInfo]
     quote: Optional[QuoteInfo]
+    panel: Optional[dict]
 
 
 class QuoteInfo(TypedDict):
@@ -70,8 +72,13 @@ class _TextEntity(_Segment):
 
 
 class Text(_TextEntity):
-    def __init__(self, text: str) -> None:
+    def __init__(
+        self,
+        text: str,
+        *styles: Literal["bold", "italic", "strikethrough", "underline"],
+    ) -> None:
         self.text = text
+        self.styles = styles
 
     async def get_text(self, _: VillaBot) -> str:
         return self.text
@@ -172,6 +179,7 @@ async def text_to_content(
     text_entities: list[_TextEntity],
     bot: VillaBot,
     image: list[ImageMsgContent] | None = None,
+    panel: Panel | None = None,
 ) -> TextMsgContentInfo:
     texts: list[str] = []
     entities: list[EntityDict] = []
@@ -198,6 +206,16 @@ async def text_to_content(
         if isinstance(entity, Text):
             text = str(entity)
             length = len(text)
+            entities.extend(
+                (
+                    {
+                        "entity": {"type": "style", "font_style": style},
+                        "length": length,
+                        "offset": offset,
+                    }
+                    for style in entity.styles
+                ),
+            )
         else:
             text = f"{await entity.get_text(bot)}{space}"
             length = _c(text)
@@ -232,4 +250,5 @@ async def text_to_content(
         ),
         "quote": quote,
         "mentionedInfo": mentioned_info,
+        "panel": panel.to_dict() if panel is not None else None,
     }

@@ -24,6 +24,7 @@ from hertavilla.apis.message import MessageAPIMixin
 from hertavilla.apis.role import RoleAPIMixin
 from hertavilla.apis.room import RoomAPIMixin
 from hertavilla.apis.villa import VillaAPIMixin
+from hertavilla.apis.websocket import WebSocketAPIMixin
 from hertavilla.match import (
     Endswith,
     EndswithResult,
@@ -43,6 +44,7 @@ import rsa
 if TYPE_CHECKING:
     from hertavilla.event import Command, Event, SendMessageEvent, Template
     from hertavilla.message import MessageChain
+    from hertavilla.ws.connection import WSConnection
 
 
 TE = TypeVar("TE", bound="Event")
@@ -108,14 +110,18 @@ class VillaBot(
     RoleAPIMixin,
     ImgAPIMixin,
     AuditAPIMixin,
+    WebSocketAPIMixin,
 ):
     def __init__(
         self,
         bot_id: str,
         secret: str,
-        callback_endpoint: str,
         pub_key: str,
-        bot_info: "Template" | None = None,
+        *,
+        callback_endpoint: str = "/",
+        bot_info: "Template | None" = None,
+        use_websocket: bool = False,
+        test_villa_id: int = 0,
     ) -> None:
         from hertavilla.event import SendMessageEvent
 
@@ -128,6 +134,10 @@ class VillaBot(
         self.handlers: list[Handler] = []
         self.message_handlers: list[MessageHandler] = []
         self.register_handler(SendMessageEvent, self.message_handler)
+
+        self.use_websocket = use_websocket
+        self.test_villa_id = test_villa_id
+        self.ws: "WSConnection | None" = None
 
     @property
     def bot_info(self) -> "Template":
@@ -362,3 +372,14 @@ class VillaBot(
             return func
 
         return wrapper
+
+    async def logout(self) -> None:
+        if self.use_websocket is None:
+            raise RuntimeError(
+                f"WebSocket of {self.bot_id} is disabled",
+            )
+        if self.ws is None:
+            raise RuntimeError(
+                f"WebSocket of {self.bot_id} is not connected",
+            )
+        await self.ws.logout()

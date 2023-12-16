@@ -26,6 +26,12 @@ FastAPI 后端支持:
 pip install herta-villa-sdk[fastapi]
 ```
 
+WebSocket 支持:
+
+```shell
+pip install herta-villa-sdk[ws]
+```
+
 ## 快速开始
 
 你需要拥有一个[大别野](https://dby.miyoushe.com/chat)机器人。可前往大别野[「机器人开发者社区」](https://dby.miyoushe.com/chat/463/20020)（`OpenVilla`）申请。
@@ -48,8 +54,10 @@ ccc
 bot = VillaBot(
     "bot_id",  # 这里填写 bot_id
     "bot_secret",  # 这里填写 secret
-    "/",  # bot 回调 endpoint
     PUB_KEY,  # 开放平台提供的 pub_key
+    callback_endpoint="/",  # bot 回调 endpoint
+    # use_websocket=True,  # 使用 WebSocket
+    # test_villa_id=0,  # 测试别野，上线后可填 0
 )
 
 
@@ -69,6 +77,34 @@ run(bot)  # 运行 bot
 ## 示例
 
 详见 [examples](./examples/) 文件夹。
+
+## WebSocket 支持
+
+需在开放平台的「回调方式」中选择 「websocket回调」。
+
+在实例化 `VillaBot` 时传入参数：
+
+- `use_websocket` (bool) 启用 WebSocket
+- `test_villa_id` (int) 测试别野，上线后可填 0
+
+启动时会自动登录并接收事件。
+
+### 手动下线
+
+调用 `VillaBot.logout` 方法。
+
+### Loop 后端
+
+在不需要 HTTP WebHook 时，Herta SDK 提供了 `LoopBackend`。
+
+此后端仅依靠异步 `loop` 运行。
+
+同时增加了监视 WS 连接（所有连接断开[^1]时会自动关闭应用）
+
+[^1]:机器人主动 Logout 或者被服务器踢下线
+
+- `auto_shutdown` (bool) 启用自动关闭
+- `watch_interval` (int) 监视间隔
 
 ## 支持的 API
 
@@ -106,6 +142,7 @@ run(bot)  # 运行 bot
   - [x] 图片转存 `/transferImage`
   - [x] 获取图片上传参数 `/getUploadImageParams`
 - [x] 审核 `/audit`
+- [x] 获取 WebSocket 接入信息 `/getWebsocketInfo`
 
 ## 支持的事件
 
@@ -125,6 +162,7 @@ run(bot)  # 运行 bot
 ## 相关项目
 
 - [CMHopeSunshine/villa-py](https://github.com/CMHopeSunshine/villa-py) 米游社大别野 Bot Python SDK（非官方）
+- [CMHopeSunshine/nonebot-adapter-villa](https://github.com/CMHopeSunshine/nonebot-adapter-villa) NoneBot2 米游社大别野 Bot 适配器
 
 ## 交流
 

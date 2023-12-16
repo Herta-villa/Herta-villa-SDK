@@ -5,12 +5,16 @@ import asyncio
 from dataclasses import dataclass
 import json
 import logging
-from typing import Any, Callable, Sequence
+from typing import TYPE_CHECKING, Any, Callable, Sequence
 
 from hertavilla.bot import VillaBot
 from hertavilla.event import parse_event
+from hertavilla.utils import TaskManager
 
 from ._lifespan import L_FUNC
+
+if TYPE_CHECKING:
+    from hertavilla.ws.connection import WSConnection
 
 background_tasks = set()
 
@@ -28,11 +32,11 @@ NO_BOT = ResponseData(404, 1, "no bot with this id")
 
 
 class BaseBackend(abc.ABC):
-    def __init__(self, host: str = "0.0.0.0", port: int = 8080, **kwargs: Any):
-        self.host = host
-        self.port = port
+    def __init__(self, **kwargs: Any):
         self.backend_extra_config = kwargs
         self.bots: dict[str, VillaBot] = {}
+        self.ws_connections: set["WSConnection"] = set()
+        self.task_manager = TaskManager()
         self.logger = logging.getLogger(
             f"hertavilla.backend.{self.name.lower()}",
         )
@@ -113,3 +117,21 @@ class BaseBackend(abc.ABC):
             f"Received event but no bot with id {event.robot.template.id}",
         )
         return NO_BOT
+
+    async def _start_ws(self, bots: tuple[VillaBot, ...]) -> None:
+        try:
+            from hertavilla.ws.connection import WSConnection
+        except ImportError:
+            return
+        for bot in (bot for bot in bots if bot.use_websocket):
+            conn = WSConnection(bot, self.ws_connections)
+            self.ws_connections.add(conn)
+            self.task_manager.task_nowait(conn.connect)
+        self.on_shutdown(self._stop_ws)
+
+    async def _stop_ws(self) -> None:
+        if len(self.ws_connections) == 0:
+            return
+        for conn in self.ws_connections:
+            await conn.logout()
+        await asyncio.sleep(1)
