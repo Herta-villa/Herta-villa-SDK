@@ -252,7 +252,7 @@ class AuditCallbackEvent(Event):
     bot_tpl_id: str
     """机器人 id"""
 
-    room_id: Optional[int] = None
+    room_id: int
     """房间 id（和审核接口调用方传入的值一致）"""
 
     user_id: int
