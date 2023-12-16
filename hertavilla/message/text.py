@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Literal, Optional, cast
 
+from hertavilla.message.component import Panel
 from hertavilla.message.image import ImageMsgContent
 from hertavilla.message.internal import MsgContent, MsgContentInfo, _Segment
 from hertavilla.typing import TypedDict
@@ -19,6 +20,7 @@ class TextMsgContentInfo(MsgContentInfo):
     content: TextMsgContent
     mentionedInfo: Optional[MentionedInfo]
     quote: Optional[QuoteInfo]
+    panel: Optional[dict]
 
 
 class QuoteInfo(TypedDict):
@@ -173,10 +175,23 @@ class TextMsgContent(MsgContent):
     images: Optional[List[ImageMsgContent]] = None
 
 
+def _make_panel(
+    panel: Panel,
+) -> dict[str, Any]:
+    if (template_id := panel.template_id) is not None:
+        return {"template_id": template_id}
+    return {
+        "small_component_group_list": panel.small.dict()["__root__"],
+        "mid_component_group_list": panel.mid.dict()["__root__"],
+        "big_component_group_list": panel.big.dict()["__root__"],
+    }
+
+
 async def text_to_content(
     text_entities: list[_TextEntity],
     bot: VillaBot,
     image: list[ImageMsgContent] | None = None,
+    panel: Panel | None = None,
 ) -> TextMsgContentInfo:
     texts: list[str] = []
     entities: list[EntityDict] = []
@@ -247,4 +262,5 @@ async def text_to_content(
         ),
         "quote": quote,
         "mentionedInfo": mentioned_info,
+        "panel": _make_panel(panel) if panel is not None else None,
     }

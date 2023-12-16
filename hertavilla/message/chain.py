@@ -5,6 +5,7 @@ import logging
 import sys
 from typing import TYPE_CHECKING, Iterable, List
 
+from hertavilla.message.component import Panel
 from hertavilla.message.image import (
     Image,
     ImageMsgContentInfo,
@@ -71,19 +72,22 @@ class MessageChain(List[_Segment]):
             self.append(segment)
         return self
 
-    async def to_content_json(
+    async def to_content_json(  # noqa: PLR0912
         self,
         bot: VillaBot,
     ) -> tuple[MsgContentInfo, str]:
         text_entities = []
         image = []
         posts = []
+        panel: Panel | None = None
 
         for segment in self:
             if isinstance(segment, Image):
                 image.append(image_to_content(segment))
             elif isinstance(segment, Post):
                 posts.append(post_to_content(segment))
+            elif isinstance(segment, Panel):
+                panel = segment
             else:
                 text_entities.append(segment)
 
@@ -127,7 +131,10 @@ class MessageChain(List[_Segment]):
                 "When post and text are present at the same time, "
                 "the post will not be displayed",
             )
-        return await text_to_content(text_entities, bot, image), "MHY:Text"
+        return (
+            await text_to_content(text_entities, bot, image, panel),
+            "MHY:Text",
+        )
 
     async def get_text(
         self,
