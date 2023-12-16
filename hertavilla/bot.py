@@ -375,3 +375,14 @@ class VillaBot(
             return func
 
         return wrapper
+
+    async def logout(self) -> None:
+        if self.use_websocket is None:
+            raise RuntimeError(
+                f"WebSocket of {self.bot_id} is disabled",
+            )
+        if self.ws is None:
+            raise RuntimeError(
+                f"WebSocket of {self.bot_id} is not connected",
+            )
+        await self.ws.logout()

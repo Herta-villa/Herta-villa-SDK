@@ -127,14 +127,14 @@ class Logout(Package, pb_stub=PLogout):
 
 @dataclass(repr=True)
 class LogoutReply(Package, pb_stub=PLogoutReply, flag=FlagType.RESPONSE):
-    code: int
-    """非0表示失败，错误码见附录 网关错误码"""
-
-    msg: str
-    """错误提示"""
-
     conn_id: int
     """唯一连接ID"""
+
+    code: int = 0
+    """非0表示失败，错误码见附录 网关错误码"""
+
+    msg: str = ""
+    """错误提示"""
 
     biz_type: ClassVar[BizType] = BizType.P_LOGOUT
 

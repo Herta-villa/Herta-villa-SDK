@@ -181,6 +181,7 @@ class WSConnection:
                         ws_conns.remove(self.ws_conn)
                         self.ws_conn = None
                     await self._stop_heartbeat()
+        logger.info(f"[{self.bot.bot_id}] Connection is closed.")
         self.bot.ws = None
         self.owner.discard(self)
 
