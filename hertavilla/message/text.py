@@ -38,7 +38,7 @@ class QuoteInfo(TypedDict):
 
 
 class MentionedInfo(TypedDict):
-    type: Literal[1, 2]  # noqa: A003
+    type: Literal[1, 2]
     """提及类型:
     值为1: @全员
     值为2: @部分成员"""
@@ -59,8 +59,7 @@ class EntityDict(TypedDict):
 class _TextEntity(_Segment):
     type_: str
 
-    def __init__(self, **kwargs) -> None:
-        ...
+    def __init__(self, **kwargs) -> None: ...
 
     def get_mention(self) -> tuple[Literal[1, 2], str] | None:
         return None

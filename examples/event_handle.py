@@ -14,13 +14,11 @@ bot = VillaBot(
 
 # bot.listen 装饰器用来监听指定类型的事件
 @bot.listen(Event)
-async def _(event: Event, bot: VillaBot):
-    ...
+async def _(event: Event, bot: VillaBot): ...
 
 
 # 手动注册（不建议）
-async def handler(event: Event, bot: VillaBot):
-    ...
+async def handler(event: Event, bot: VillaBot): ...
 
 
 bot.register_handler(Event, handler)
