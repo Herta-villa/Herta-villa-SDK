@@ -12,16 +12,13 @@ if TYPE_CHECKING:
 
 
 class _Segment(abc.ABC):
-    ...
 
     @abc.abstractmethod
     async def get_text(self, bot: "VillaBot") -> str:
         raise NotImplementedError
 
 
-class MsgContentInfo(TypedDict):
-    ...
+class MsgContentInfo(TypedDict): ...
 
 
-class MsgContent(BaseModel):
-    ...
+class MsgContent(BaseModel): ...

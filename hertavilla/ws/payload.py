@@ -21,7 +21,7 @@ FIX_HEADER_LEN = 8
 class Payload:
     header_len: int
     """消息头长度"""
-    id: int  # noqa: A003
+    id: int
     """消息的序号，请求包的ID单调递增，回应包的ID与请求包的ID一致"""
     flag: FlagType
     """消息的方向"""

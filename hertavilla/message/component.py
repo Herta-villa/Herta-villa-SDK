@@ -17,13 +17,13 @@ BIG_MAX = 1
 
 
 class Component(BaseModel):
-    id: str  # noqa: A003
+    id: str
     """组件id，由机器人自定义，不能为空字符串。面板内的id需要唯一"""
 
     text: str
     """组件展示文本, 不能为空"""
 
-    type: int  # noqa: A003
+    type: int
     """组件类型，目前支持 type=1 按钮组件，未来会扩展更多组件类型"""
 
     need_callback: bool = True
@@ -141,12 +141,12 @@ class ButtonType(IntEnum):
 
 
 class Button(Component):
-    type: Literal[1] = 1  # noqa: A003
+    type: Literal[1] = 1
 
     c_type: ButtonType
     """组件交互类型"""
 
-    input: str = ""  # noqa: A003
+    input: str = ""
     """如果交互类型为输入型，则需要在该字段填充输入内容，不能为空"""
 
     link: str = ""

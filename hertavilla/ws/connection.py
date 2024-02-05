@@ -30,12 +30,10 @@ logger = logging.getLogger("hertavilla.ws.connection")
 background_tasks = set()
 
 
-class StopConnecting(Exception):
-    ...
+class StopConnecting(Exception): ...
 
 
-class Reconnect(Exception):
-    ...
+class Reconnect(Exception): ...
 
 
 class WSConn:
