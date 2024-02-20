@@ -8,6 +8,12 @@
 
 大别野「黑塔」Python SDK
 
+## 停更说明
+
+大别野聊天室于 2024 年 3 月 12 日正式停止服务，Herta-villa-SDK 停止更新。
+
+详情请见 [【公告】大别野聊天室下线说明](https://www.miyoushe.com/dby/article/49502845)
+
 ## 特性
 
 - 多种服务器后端（内置 `aiohttp` 和 `fastapi` 后端），完整异步支持
